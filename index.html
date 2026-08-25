@@ -1,0 +1,2654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Blade Legends - 50 Levels</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#07111f;
+    font-family:Arial,sans-serif;
+    touch-action:none;
+}
+
+canvas{
+    display:block;
+    width:100vw;
+    height:100vh;
+}
+
+#hud{
+    position:fixed;
+    top:10px;
+    left:10px;
+    z-index:10;
+    color:white;
+    font-weight:bold;
+    text-shadow:2px 2px 5px #000;
+    pointer-events:none;
+}
+
+.bar{
+    width:210px;
+    height:17px;
+    background:#151515;
+    border:2px solid #ddd;
+    margin:3px 0 7px;
+    border-radius:8px;
+    overflow:hidden;
+}
+
+#playerHP{
+    height:100%;
+    width:100%;
+    background:#27d66d;
+}
+
+#enemyHP{
+    height:100%;
+    width:100%;
+    background:#e63946;
+}
+
+#levelText{
+    color:#ffd166;
+}
+
+#bossText{
+    color:#ff477e;
+}
+
+#message{
+    position:fixed;
+    top:25%;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:15;
+    color:white;
+    font-size:30px;
+    font-weight:bold;
+    text-align:center;
+    text-shadow:3px 3px 10px #000;
+    pointer-events:none;
+}
+
+.screen{
+    position:fixed;
+    inset:0;
+    z-index:50;
+    background:rgba(3,7,15,.96);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    color:white;
+    padding:20px;
+}
+
+.hidden{
+    display:none!important;
+}
+
+h1{
+    font-size:52px;
+    color:#ffd166;
+    margin-bottom:8px;
+}
+
+h2{
+    color:#ff6385;
+    margin-bottom:15px;
+}
+
+p{
+    color:#d7e1ea;
+    margin:5px;
+}
+
+button{
+    border:0;
+    border-radius:10px;
+    padding:13px 30px;
+    margin:7px;
+    background:#e63946;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    filter:brightness(1.2);
+}
+
+#characters{
+    width:min(900px,95vw);
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    max-height:55vh;
+    overflow:auto;
+    padding:10px;
+}
+
+.charBtn{
+    width:140px;
+    min-height:75px;
+    background:#18263a;
+    border:2px solid #40556e;
+}
+
+.charBtn.locked{
+    opacity:.35;
+}
+
+.charBtn.selected{
+    border-color:#ffd166;
+    box-shadow:0 0 15px #ffd166;
+}
+
+#mobile{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:25;
+    pointer-events:none;
+}
+
+.mbtn{
+    position:absolute;
+    width:68px;
+    height:68px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-weight:bold;
+    background:rgba(20,25,35,.78);
+    border:2px solid rgba(255,255,255,.4);
+    pointer-events:auto;
+    user-select:none;
+}
+
+#leftBtn{
+    left:25px;
+    bottom:38px;
+}
+
+#rightBtn{
+    left:105px;
+    bottom:38px;
+}
+
+#jumpBtn{
+    right:180px;
+    bottom:38px;
+}
+
+#attackBtn{
+    right:100px;
+    bottom:38px;
+    background:rgba(180,30,45,.85);
+}
+
+#skillBtn{
+    right:20px;
+    bottom:38px;
+    background:rgba(40,100,190,.85);
+}
+
+@media(max-width:800px){
+
+    #mobile{
+        display:block;
+    }
+
+    #hud{
+        font-size:12px;
+    }
+
+    .bar{
+        width:145px;
+        height:13px;
+    }
+
+    #message{
+        font-size:22px;
+    }
+
+    h1{
+        font-size:36px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="game"></canvas>
+
+<div id="hud">
+
+LEVEL:
+<span id="levelText">1</span> / 50
+
+<br>
+
+❤️ PLAYER
+
+<div class="bar">
+    <div id="playerHP"></div>
+</div>
+
+👹 ENEMY
+
+<div class="bar">
+    <div id="enemyHP"></div>
+</div>
+
+<span id="bossText"></span>
+
+<br>
+
+⚔️ SCORE:
+<span id="scoreText">0</span>
+
+</div>
+
+<div id="message"></div>
+
+
+<!-- START SCREEN -->
+
+<div id="startScreen" class="screen">
+
+<h1>⚔️ BLADE LEGENDS</h1>
+
+<h2>50 LEVEL SIDE-VIEW ADVENTURE</h2>
+
+<p>2D side-view sword fighting</p>
+<p>50 levels • character selection • bosses</p>
+<p>Keyboard + mobile controls</p>
+
+<button onclick="openCharacters()">
+CHOOSE CHARACTER
+</button>
+
+</div>
+
+
+<!-- CHARACTER SCREEN -->
+
+<div id="characterScreen" class="screen hidden">
+
+<h1>CHOOSE WARRIOR</h1>
+
+<p>New warriors unlock as you progress.</p>
+
+<div id="characters"></div>
+
+<button onclick="beginGame()">
+START LEVEL
+</button>
+
+</div>
+
+
+<!-- LEVEL COMPLETE -->
+
+<div id="completeScreen" class="screen hidden">
+
+<h1>LEVEL COMPLETE!</h1>
+
+<h2 id="completeTitle">Victory!</h2>
+
+<p id="completeInfo"></p>
+
+<button onclick="nextLevel()">
+NEXT LEVEL
+</button>
+
+</div>
+
+
+<!-- GAME OVER -->
+
+<div id="gameOver" class="screen hidden">
+
+<h1>DEFEATED</h1>
+
+<h2>⚔️ The battle is not over...</h2>
+
+<p>Reached Level:
+<span id="deadLevel">1</span>
+</p>
+
+<button onclick="restartGame()">
+TRY AGAIN
+</button>
+
+</div>
+
+
+<!-- FINAL -->
+
+<div id="victory" class="screen hidden">
+
+<h1>☀️ CHAMPION!</h1>
+
+<h2>50 LEVELS COMPLETE</h2>
+
+<p>You defeated the final demon king.</p>
+<p>Yoriichi-style Sun Warrior has completed the journey.</p>
+
+<button onclick="restartGame()">
+PLAY AGAIN
+</button>
+
+</div>
+
+
+<!-- MOBILE -->
+
+<div id="mobile">
+
+<div id="leftBtn" class="mbtn">◀</div>
+<div id="rightBtn" class="mbtn">▶</div>
+<div id="jumpBtn" class="mbtn">JUMP</div>
+<div id="attackBtn" class="mbtn">⚔️</div>
+<div id="skillBtn" class="mbtn">SKILL</div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   CANVAS
+===================================================== */
+
+const canvas =
+    document.getElementById("game");
+
+const ctx =
+    canvas.getContext("2d");
+
+let W=innerWidth;
+let H=innerHeight;
+
+function resize(){
+
+    W=innerWidth;
+    H=innerHeight;
+
+    canvas.width=W;
+    canvas.height=H;
+
+}
+
+resize();
+
+addEventListener("resize",resize);
+
+
+/* =====================================================
+   GAME STATE
+===================================================== */
+
+let running=false;
+
+let level=1;
+
+let score=0;
+
+let selectedCharacter=0;
+
+let keys={};
+
+let particles=[];
+
+let enemy=null;
+
+let attackCooldown=0;
+
+let skillCooldown=0;
+
+let messageTimer=0;
+
+let screenShake=0;
+
+
+/* =====================================================
+   CHARACTERS
+===================================================== */
+
+const characters=[
+
+    {
+        name:"Tanjiro",
+        style:"Water",
+        color:"#168aad",
+        accent:"#4cc9f0",
+        unlock:1,
+        hp:120,
+        speed:4.2,
+        damage:18
+    },
+
+    {
+        name:"Inosuke",
+        style:"Beast",
+        color:"#537a3c",
+        accent:"#d9ed92",
+        unlock:6,
+        hp:135,
+        speed:4.8,
+        damage:20
+    },
+
+    {
+        name:"Zenitsu",
+        style:"Thunder",
+        color:"#f4c542",
+        accent:"#fff275",
+        unlock:11,
+        hp:105,
+        speed:5.2,
+        damage:24
+    },
+
+    {
+        name:"Flame Warrior",
+        style:"Flame",
+        color:"#d94801",
+        accent:"#ffb703",
+        unlock:16,
+        hp:130,
+        speed:4.5,
+        damage:23
+    },
+
+    {
+        name:"Mist Warrior",
+        style:"Mist",
+        color:"#8ecae6",
+        accent:"#caf0f8",
+        unlock:21,
+        hp:115,
+        speed:5,
+        damage:22
+    },
+
+    {
+        name:"Water Hashira",
+        style:"Water",
+        color:"#277da1",
+        accent:"#90e0ef",
+        unlock:26,
+        hp:140,
+        speed:4.4,
+        damage:26
+    },
+
+    {
+        name:"Stone Warrior",
+        style:"Stone",
+        color:"#777",
+        accent:"#ddd",
+        unlock:31,
+        hp:160,
+        speed:3.8,
+        damage:30
+    },
+
+    {
+        name:"Wind Warrior",
+        style:"Wind",
+        color:"#43aa8b",
+        accent:"#b7e4c7",
+        unlock:34,
+        hp:125,
+        speed:5,
+        damage:27
+    },
+
+    {
+        name:"Sun Warrior",
+        style:"Sun",
+        color:"#9d0208",
+        accent:"#ffd166",
+        unlock:50,
+        hp:180,
+        speed:5,
+        damage:35
+    }
+
+];
+
+
+/* =====================================================
+   PLAYER
+===================================================== */
+
+const player={
+
+    x:180,
+
+    y:0,
+
+    width:42,
+
+    height:80,
+
+    vx:0,
+
+    vy:0,
+
+    speed:4,
+
+    hp:100,
+
+    maxHP:100,
+
+    grounded:false,
+
+    facing:1,
+
+    attack:false,
+
+    attackTimer:0,
+
+    hurtTimer:0,
+
+    skillTimer:0
+
+};
+
+
+/* =====================================================
+   WORLD
+===================================================== */
+
+const world={
+
+    width:5000,
+
+    ground:0
+
+};
+
+let cameraX=0;
+
+
+/* =====================================================
+   INPUT
+===================================================== */
+
+addEventListener("keydown",e=>{
+
+    keys[e.key.toLowerCase()]=true;
+
+    if(e.code==="Space"){
+        attackPressed=true;
+    }
+
+    if(e.key.toLowerCase()==="j"){
+        skillPressed=true;
+    }
+
+});
+
+addEventListener("keyup",e=>{
+
+    keys[e.key.toLowerCase()]=false;
+
+    if(e.code==="Space"){
+        attackPressed=false;
+    }
+
+    if(e.key.toLowerCase()==="j"){
+        skillPressed=false;
+    }
+
+});
+
+
+let attackPressed=false;
+let skillPressed=false;
+
+
+/* =====================================================
+   MOBILE INPUT
+===================================================== */
+
+function mobileHold(id,key){
+
+    const el=
+        document.getElementById(id);
+
+    el.addEventListener(
+        "touchstart",
+        e=>{
+            e.preventDefault();
+            keys[key]=true;
+        },
+        {passive:false}
+    );
+
+    el.addEventListener(
+        "touchend",
+        e=>{
+            e.preventDefault();
+            keys[key]=false;
+        },
+        {passive:false}
+    );
+
+}
+
+
+mobileHold("leftBtn","a");
+mobileHold("rightBtn","d");
+
+
+document
+.getElementById("jumpBtn")
+.addEventListener(
+    "touchstart",
+    e=>{
+        e.preventDefault();
+        jump();
+    },
+    {passive:false}
+);
+
+
+document
+.getElementById("attackBtn")
+.addEventListener(
+    "touchstart",
+    e=>{
+        e.preventDefault();
+        attackPressed=true;
+    },
+    {passive:false}
+);
+
+document
+.getElementById("attackBtn")
+.addEventListener(
+    "touchend",
+    e=>{
+        e.preventDefault();
+        attackPressed=false;
+    },
+    {passive:false}
+);
+
+
+document
+.getElementById("skillBtn")
+.addEventListener(
+    "touchstart",
+    e=>{
+        e.preventDefault();
+        skillPressed=true;
+    },
+    {passive:false}
+);
+
+document
+.getElementById("skillBtn")
+.addEventListener(
+    "touchend",
+    e=>{
+        e.preventDefault();
+        skillPressed=false;
+    },
+    {passive:false}
+);
+
+
+/* =====================================================
+   CHARACTER SCREEN
+===================================================== */
+
+function openCharacters(){
+
+    document
+    .getElementById("startScreen")
+    .classList
+    .add("hidden");
+
+    document
+    .getElementById("characterScreen")
+    .classList
+    .remove("hidden");
+
+    renderCharacters();
+
+}
+
+
+function renderCharacters(){
+
+    const box=
+        document.getElementById("characters");
+
+    box.innerHTML="";
+
+
+    characters.forEach(
+        (c,i)=>{
+
+            const button=
+                document.createElement("button");
+
+            button.className=
+                "charBtn";
+
+
+            if(level<c.unlock){
+
+                button.classList.add("locked");
+
+                button.innerHTML=
+                    "🔒 "+c.name+
+                    "<br><small>Level "+
+                    c.unlock+
+                    "</small>";
+
+            }
+            else{
+
+                if(
+                    selectedCharacter===i
+                ){
+
+                    button.classList.add(
+                        "selected"
+                    );
+
+                }
+
+                button.innerHTML=
+                    "⚔️ "+c.name+
+                    "<br><small>"+
+                    c.style+
+                    " Style</small>";
+
+
+                button.onclick=()=>{
+
+                    selectedCharacter=i;
+
+                    renderCharacters();
+
+                };
+
+            }
+
+            box.appendChild(button);
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   BEGIN GAME
+===================================================== */
+
+function beginGame(){
+
+    const c=
+        characters[selectedCharacter];
+
+
+    if(level<c.unlock){
+
+        selectedCharacter=0;
+
+    }
+
+
+    document
+    .getElementById("characterScreen")
+    .classList
+    .add("hidden");
+
+
+    startLevel();
+
+}
+
+
+/* =====================================================
+   START LEVEL
+===================================================== */
+
+function startLevel(){
+
+    const c=
+        characters[selectedCharacter];
+
+
+    running=true;
+
+    player.x=180;
+
+    player.y=
+        H-130;
+
+    player.vx=0;
+
+    player.vy=0;
+
+    player.facing=1;
+
+    player.maxHP=c.hp;
+
+    player.hp=c.hp;
+
+    player.speed=c.speed;
+
+    attackCooldown=0;
+
+    skillCooldown=0;
+
+    player.attackTimer=0;
+
+    particles=[];
+
+
+    createEnemy();
+
+
+    showMessage(
+        "LEVEL "+
+        level+
+        (
+            isBossLevel(level)
+            ?" — BOSS!"
+            :" — FIGHT!"
+        )
+    );
+
+}
+
+
+/* =====================================================
+   BOSS LOGIC
+===================================================== */
+
+function isBossLevel(l){
+
+    return l>=38;
+
+}
+
+
+function getBossName(l){
+
+    if(l===38)
+        return "Lower Moon 12";
+
+    if(l===39)
+        return "Lower Moon 11";
+
+    if(l===40)
+        return "Lower Moon 10";
+
+    if(l===41)
+        return "Lower Moon 9";
+
+    if(l===42)
+        return "Lower Moon 8";
+
+    if(l===43)
+        return "Lower Moon 7";
+
+    if(l===44)
+        return "Lower Moon 6";
+
+    if(l===45)
+        return "Upper Moon 6";
+
+    if(l===46)
+        return "Upper Moon 5";
+
+    if(l===47)
+        return "Upper Moon 4";
+
+    if(l===48)
+        return "Upper Moon 3";
+
+    if(l===49)
+        return "Upper Moon 1";
+
+    if(l===50)
+        return "Muzan";
+
+    return "";
+
+}
+
+
+/* =====================================================
+   CREATE ENEMY
+===================================================== */
+
+function createEnemy(){
+
+    const boss=
+        isBossLevel(level);
+
+
+    const hp=
+        boss
+        ?500+level*45
+        :60+level*15;
+
+
+    enemy={
+
+        x:
+            W-180,
+
+        y:
+            H-130,
+
+        width:
+            boss?65:45,
+
+        height:
+            boss?110:80,
+
+        vx:0,
+
+        vy:0,
+
+        hp:hp,
+
+        maxHP:hp,
+
+        speed:
+            boss
+            ?1.4+level*.055
+            :1.2+level*.045,
+
+        damage:
+            boss
+            ?0.6+level*.04
+            :0.35+level*.025,
+
+        boss:boss,
+
+        attackTimer:0,
+
+        hurtTimer:0,
+
+        color:
+            boss
+            ?" #721c24"
+            :"#40151a"
+
+    };
+
+}
+
+
+/* =====================================================
+   MOVEMENT
+===================================================== */
+
+function updatePlayer(){
+
+    if(!running)
+        return;
+
+
+    let moving=false;
+
+
+    if(
+        keys["a"]||
+        keys["arrowleft"]
+    ){
+
+        player.vx=
+            -player.speed;
+
+        player.facing=-1;
+
+        moving=true;
+
+    }
+
+
+    if(
+        keys["d"]||
+        keys["arrowright"]
+    ){
+
+        player.vx=
+            player.speed;
+
+        player.facing=1;
+
+        moving=true;
+
+    }
+
+
+    if(!moving){
+
+        player.vx*=.75;
+
+    }
+
+
+    player.x+=player.vx;
+
+
+    if(
+        keys["w"]||
+        keys["arrowup"]
+    ){
+
+        if(player.grounded){
+
+            jump();
+
+        }
+
+    }
+
+
+    player.vy+=.55;
+
+    player.y+=player.vy;
+
+
+    const ground=
+        H-115;
+
+
+    if(
+        player.y>=ground
+    ){
+
+        player.y=ground;
+
+        player.vy=0;
+
+        player.grounded=true;
+
+    }
+    else{
+
+        player.grounded=false;
+
+    }
+
+
+    player.x=
+        Math.max(
+            50,
+            Math.min(
+                world.width-50,
+                player.x
+            )
+        );
+
+
+    if(attackCooldown>0)
+        attackCooldown--;
+
+    if(skillCooldown>0)
+        skillCooldown--;
+
+    if(player.attackTimer>0)
+        player.attackTimer--;
+
+
+    if(
+        attackPressed &&
+        attackCooldown<=0
+    ){
+
+        attack();
+
+    }
+
+
+    if(
+        skillPressed &&
+        skillCooldown<=0
+    ){
+
+        skill();
+
+    }
+
+
+    cameraX=
+        player.x-
+        W*.35;
+
+
+    cameraX=
+        Math.max(
+            0,
+            Math.min(
+                world.width-W,
+                cameraX
+            )
+        );
+
+}
+
+
+/* =====================================================
+   JUMP
+===================================================== */
+
+function jump(){
+
+    if(
+        player.grounded
+    ){
+
+        player.vy=-11;
+
+        player.grounded=false;
+
+    }
+
+}
+
+
+/* =====================================================
+   ATTACK
+===================================================== */
+
+function attack(){
+
+    attackCooldown=24;
+
+    player.attackTimer=12;
+
+    player.attack=true;
+
+
+    const range=
+        player.facing===1
+        ?100
+        :-100;
+
+
+    if(
+        enemy &&
+        Math.abs(
+            enemy.x-player.x
+        )<Math.abs(range)+35
+    ){
+
+        const front=
+            (enemy.x-player.x)*
+            player.facing;
+
+
+        if(front>-45){
+
+            const damage=
+                characters[
+                    selectedCharacter
+                ].damage;
+
+
+            enemy.hp-=damage;
+
+
+            enemy.hurtTimer=8;
+
+
+            createSlash(
+                player.x+
+                player.facing*50,
+                player.y-35,
+                "#ffffff"
+            );
+
+
+            screenShake=5;
+
+
+            if(enemy.hp<=0){
+
+                defeatEnemy();
+
+            }
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   SKILL
+===================================================== */
+
+function skill(){
+
+    skillCooldown=100;
+
+    const c=
+        characters[selectedCharacter];
+
+
+    /*
+    5 DIFFERENT FORMS
+    */
+
+    const form=
+        level%5;
+
+
+    let damage=
+        c.damage*
+        (2.2+form*.3);
+
+
+    if(
+        enemy &&
+        Math.abs(
+            enemy.x-player.x
+        )<220
+    ){
+
+        enemy.hp-=damage;
+
+        enemy.hurtTimer=15;
+
+        createBreathingEffect(
+            player.x,
+            player.y-35,
+            c.style
+        );
+
+
+        screenShake=10;
+
+
+        if(enemy.hp<=0){
+
+            defeatEnemy();
+
+        }
+
+    }
+    else{
+
+        createBreathingEffect(
+            player.x+
+            player.facing*80,
+            player.y-35,
+            c.style
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   ENEMY UPDATE
+===================================================== */
+
+function updateEnemy(){
+
+    if(!running || !enemy)
+        return;
+
+
+    enemy.attackTimer--;
+
+
+    const dx=
+        player.x-enemy.x;
+
+
+    const distance=
+        Math.abs(dx);
+
+
+    if(
+        distance>65
+    ){
+
+        enemy.x+=
+            Math.sign(dx)*
+            enemy.speed;
+
+    }
+    else{
+
+        if(
+            enemy.attackTimer<=0
+        ){
+
+            enemy.attackTimer=
+                45;
+
+            player.hp-=
+                enemy.damage;
+
+            player.hurtTimer=
+                10;
+
+            screenShake=8;
+
+            createParticles(
+                player.x,
+                player.y-35,
+                "#ff4d6d",
+                10
+            );
+
+        }
+
+    }
+
+
+    if(
+        player.hp<=0
+    ){
+
+        gameOver();
+
+    }
+
+}
+
+
+/* =====================================================
+   DEFEAT ENEMY
+===================================================== */
+
+function defeatEnemy(){
+
+    score+=
+        enemy.boss
+        ?1000
+        :100;
+
+
+    createParticles(
+        enemy.x,
+        enemy.y-40,
+        "#ffd166",
+        35
+    );
+
+
+    enemy=null;
+
+
+    running=false;
+
+
+    if(level>=50){
+
+        document
+        .getElementById("victory")
+        .classList
+        .remove("hidden");
+
+        return;
+
+    }
+
+
+    /*
+    Unlock next characters
+    */
+
+    document
+    .getElementById("completeTitle")
+    .textContent=
+        isBossLevel(level)
+        ?"BOSS DEFEATED!"
+        :"LEVEL CLEARED!";
+
+
+    document
+    .getElementById("completeInfo")
+    .textContent=
+        "Level "+
+        level+
+        " complete. "+
+        (
+            level<50
+            ?"Next level: "+
+            (level+1)
+            :""
+        );
+
+
+    document
+    .getElementById("completeScreen")
+    .classList
+    .remove("hidden");
+
+}
+
+
+/* =====================================================
+   NEXT LEVEL
+===================================================== */
+
+function nextLevel(){
+
+    document
+    .getElementById("completeScreen")
+    .classList
+    .add("hidden");
+
+
+    level++;
+
+
+    /*
+    Yoriichi-style Sun Warrior
+    becomes available for final level.
+    */
+
+    if(level===50){
+
+        selectedCharacter=
+            characters.length-1;
+
+    }
+
+
+    renderCharacters();
+
+    startLevel();
+
+}
+
+
+/* =====================================================
+   GAME OVER
+===================================================== */
+
+function gameOver(){
+
+    running=false;
+
+
+    document
+    .getElementById("deadLevel")
+    .textContent=
+        level;
+
+
+    document
+    .getElementById("gameOver")
+    .classList
+    .remove("hidden");
+
+}
+
+
+/* =====================================================
+   RESTART
+===================================================== */
+
+function restartGame(){
+
+    level=1;
+
+    score=0;
+
+    selectedCharacter=0;
+
+
+    document
+    .querySelectorAll(".screen")
+    .forEach(
+        s=>s.classList.add("hidden")
+    );
+
+
+    document
+    .getElementById("startScreen")
+    .classList
+    .remove("hidden");
+
+}
+
+
+/* =====================================================
+   DRAW BACKGROUND
+===================================================== */
+
+function drawBackground(){
+
+    const sky=
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            H
+        );
+
+
+    sky.addColorStop(
+        0,
+        "#102a43"
+    );
+
+    sky.addColorStop(
+        .6,
+        "#1b4965"
+    );
+
+    sky.addColorStop(
+        1,
+        "#0b132b"
+    );
+
+
+    ctx.fillStyle=sky;
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    /*
+    MOON
+    */
+
+    ctx.fillStyle=
+        "rgba(255,245,200,.9)";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        W*.78,
+        H*.18,
+        45,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+    MOUNTAINS
+    */
+
+    ctx.fillStyle=
+        "#102030";
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(0,H-130);
+
+    for(
+        let x=0;
+        x<=W;
+        x+=100
+    ){
+
+        ctx.lineTo(
+            x,
+            H-180-
+            Math.sin(
+                x*.015
+            )*70
+        );
+
+    }
+
+    ctx.lineTo(W,H);
+
+    ctx.lineTo(0,H);
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    /*
+    GROUND
+    */
+
+    ctx.fillStyle="#24252a";
+
+    ctx.fillRect(
+        0,
+        H-110,
+        W,
+        110
+    );
+
+
+    ctx.fillStyle="#3a3b42";
+
+    ctx.fillRect(
+        0,
+        H-110,
+        W,
+        8
+    );
+
+
+    /*
+    FLOOR LINES
+    */
+
+    ctx.strokeStyle=
+        "rgba(255,255,255,.08)";
+
+    for(
+        let x=
+            -cameraX%80;
+        x<W;
+        x+=80
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x,
+            H-102
+        );
+
+        ctx.lineTo(
+            x+45,
+            H
+        );
+
+        ctx.stroke();
+
+    }
+
+}
+
+
+/* =====================================================
+   DRAW PLAYER
+===================================================== */
+
+function drawPlayer(){
+
+    const c=
+        characters[selectedCharacter];
+
+
+    const x=
+        player.x-cameraX;
+
+
+    const y=
+        player.y;
+
+
+    ctx.save();
+
+    ctx.translate(
+        x,
+        y
+    );
+
+
+    ctx.scale(
+        player.facing,
+        1
+    );
+
+
+    /*
+    SHADOW
+    */
+
+    ctx.fillStyle=
+        "rgba(0,0,0,.4)";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        7,
+        30,
+        8,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+    LEGS
+    */
+
+    ctx.fillStyle="#171717";
+
+    ctx.fillRect(
+        -14,
+        -5,
+        10,
+        38
+    );
+
+    ctx.fillRect(
+        4,
+        -5,
+        10,
+        38
+    );
+
+
+    /*
+    BODY
+    */
+
+    ctx.fillStyle=
+        c.color;
+
+    ctx.fillRect(
+        -20,
+        -78,
+        40,
+        65
+    );
+
+
+    /*
+    COAT DETAIL
+    */
+
+    ctx.strokeStyle=
+        c.accent;
+
+    ctx.lineWidth=4;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        -75
+    );
+
+    ctx.lineTo(
+        0,
+        -18
+    );
+
+    ctx.stroke();
+
+
+    /*
+    HEAD
+    */
+
+    ctx.fillStyle="#c98b6b";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -95,
+        18,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+    HAIR
+    */
+
+    ctx.fillStyle=
+        selectedCharacter===2
+        ?" #ffd60a"
+        :"#161616";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -101,
+        18,
+        Math.PI,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+    ARM
+    */
+
+    ctx.strokeStyle=
+        "#c98b6b";
+
+    ctx.lineWidth=9;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        10,
+        -60
+    );
+
+    ctx.lineTo(
+        35,
+        -45
+    );
+
+    ctx.stroke();
+
+
+    /*
+    SWORD
+    */
+
+    ctx.strokeStyle=
+        "#e8f1f2";
+
+    ctx.lineWidth=5;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        30,
+        -45
+    );
+
+    ctx.lineTo(
+        75,
+        -72
+    );
+
+    ctx.stroke();
+
+
+    ctx.strokeStyle=
+        "#ffd166";
+
+    ctx.lineWidth=3;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        29,
+        -46
+    );
+
+    ctx.lineTo(
+        76,
+        -73
+    );
+
+    ctx.stroke();
+
+
+    /*
+    EYE
+    */
+
+    ctx.fillStyle="#111";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        7,
+        -98,
+        2.5,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+    ATTACK ARC
+    */
+
+    if(
+        player.attackTimer>0
+    ){
+
+        ctx.strokeStyle=
+            c.accent;
+
+        ctx.lineWidth=8;
+
+        ctx.shadowBlur=20;
+
+        ctx.shadowColor=
+            c.accent;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            25,
+            -55,
+            65,
+            -.9,
+            .7
+        );
+
+        ctx.stroke();
+
+        ctx.shadowBlur=0;
+
+    }
+
+
+    ctx.restore();
+
+
+    /*
+    CHARACTER NAME
+    */
+
+    ctx.fillStyle="white";
+
+    ctx.font="bold 14px Arial";
+
+    ctx.textAlign="center";
+
+    ctx.fillText(
+        c.name,
+        x,
+        y-135
+    );
+
+}
+
+
+/* =====================================================
+   DRAW ENEMY
+===================================================== */
+
+function drawEnemy(){
+
+    if(!enemy)
+        return;
+
+
+    const x=
+        enemy.x-cameraX;
+
+    const y=
+        enemy.y;
+
+
+    ctx.save();
+
+    ctx.translate(
+        x,
+        y
+    );
+
+
+    const scale=
+        enemy.boss
+        ?1.35
+        :1;
+
+
+    ctx.scale(
+        scale,
+        scale
+    );
+
+
+    /*
+    SHADOW
+    */
+
+    ctx.fillStyle=
+        "rgba(0,0,0,.5)";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        8,
+        35,
+        9,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+    LEGS
+    */
+
+    ctx.fillStyle="#171717";
+
+    ctx.fillRect(
+        -15,
+        -5,
+        11,
+        40
+    );
+
+    ctx.fillRect(
+        4,
+        -5,
+        11,
+        40
+    );
+
+
+    /*
+    BODY
+    */
+
+    ctx.fillStyle=
+        enemy.boss
+        ?" #541388"
+        :"#5b1115";
+
+    ctx.fillRect(
+        -22,
+        -82,
+        44,
+        68
+    );
+
+
+    /*
+    HEAD
+    */
+
+    ctx.fillStyle=
+        "#a65f4b";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -101,
+        19,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+    DARK HAIR
+    */
+
+    ctx.fillStyle="#090909";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -106,
+        20,
+        Math.PI,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+    EYES
+    */
+
+    ctx.fillStyle="#ff003c";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        -7,
+        -102,
+        3,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        7,
+        -102,
+        3,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+    ARMS
+    */
+
+    ctx.strokeStyle="#a65f4b";
+
+    ctx.lineWidth=10;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -12,
+        -60
+    );
+
+    ctx.lineTo(
+        -38,
+        -40
+    );
+
+    ctx.stroke();
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        12,
+        -60
+    );
+
+    ctx.lineTo(
+        38,
+        -40
+    );
+
+    ctx.stroke();
+
+
+    ctx.restore();
+
+
+    /*
+    BOSS NAME
+    */
+
+    ctx.fillStyle=
+        enemy.boss
+        ?" #ff477e"
+        :"#ffb3b3";
+
+    ctx.font=
+        enemy.boss
+        ?"bold 18px Arial"
+        :"bold 13px Arial";
+
+    ctx.textAlign="center";
+
+    ctx.fillText(
+        enemy.boss
+        ?getBossName(level)
+        :"DEMON",
+        x,
+        y-145
+    );
+
+
+    /*
+    ENEMY HP
+    */
+
+    const barW=
+        enemy.boss
+        ?150
+        :90;
+
+
+    ctx.fillStyle="#111";
+
+    ctx.fillRect(
+        x-barW/2,
+        y-125,
+        barW,
+        9
+    );
+
+
+    ctx.fillStyle=
+        enemy.boss
+        ?" #ff006e"
+        :"#e63946";
+
+
+    ctx.fillRect(
+        x-barW/2,
+        y-125,
+        barW*
+        Math.max(
+            0,
+            enemy.hp/enemy.maxHP
+        ),
+        9
+    );
+
+}
+
+
+/* =====================================================
+   BREATHING EFFECTS
+===================================================== */
+
+function createBreathingEffect(
+    x,
+    y,
+    style
+){
+
+    let color="#4cc9f0";
+
+
+    if(style==="Thunder")
+        color="#ffe45e";
+
+    if(style==="Flame")
+        color="#ff6b35";
+
+    if(style==="Beast")
+        color="#90be6d";
+
+    if(style==="Mist")
+        color="#caf0f8";
+
+    if(style==="Stone")
+        color="#bcb8b1";
+
+    if(style==="Wind")
+        color="#80ed99";
+
+    if(style==="Sun")
+        color="#ffd166";
+
+
+    /*
+    Large curved attack
+    */
+
+    for(
+        let i=0;
+        i<35;
+        i++
+    ){
+
+        const angle=
+            Math.random()*
+            Math.PI*2;
+
+
+        const speed=
+            2+
+            Math.random()*6;
+
+
+        particles.push({
+
+            x:x,
+
+            y:y,
+
+            vx:
+                Math.cos(angle)*
+                speed,
+
+            vy:
+                Math.sin(angle)*
+                speed,
+
+            life:
+                30+
+                Math.random()*30,
+
+            color:color,
+
+            size:
+                3+
+                Math.random()*8
+
+        });
+
+    }
+
+}
+
+
+/* =====================================================
+   SLASH
+===================================================== */
+
+function createSlash(
+    x,
+    y,
+    color
+){
+
+    for(
+        let i=0;
+        i<15;
+        i++
+    ){
+
+        particles.push({
+
+            x:x,
+
+            y:y,
+
+            vx:
+                (Math.random()-.5)*8,
+
+            vy:
+                (Math.random()-.5)*8,
+
+            life:20+
+                Math.random()*20,
+
+            color:color,
+
+            size:
+                3+
+                Math.random()*5
+
+        });
+
+    }
+
+}
+
+
+/* =====================================================
+   PARTICLES
+===================================================== */
+
+function updateParticles(){
+
+    for(
+        const p of particles
+    ){
+
+        p.x+=p.vx;
+
+        p.y+=p.vy;
+
+        p.vx*=.96;
+
+        p.vy*=.96;
+
+        p.life--;
+
+    }
+
+
+    particles=
+        particles.filter(
+            p=>p.life>0
+        );
+
+}
+
+
+function drawParticles(){
+
+    for(
+        const p of particles
+    ){
+
+        ctx.globalAlpha=
+            Math.max(
+                0,
+                p.life/50
+            );
+
+
+        ctx.fillStyle=
+            p.color;
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x-cameraX,
+            p.y,
+            p.size||4,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+    }
+
+
+    ctx.globalAlpha=1;
+
+}
+
+
+/* =====================================================
+   HUD
+===================================================== */
+
+function updateHUD(){
+
+    document
+    .getElementById("levelText")
+    .textContent=level;
+
+
+    document
+    .getElementById("scoreText")
+    .textContent=score;
+
+
+    document
+    .getElementById("playerHP")
+    .style.width=
+        Math.max(
+            0,
+            player.hp/
+            player.maxHP*
+            100
+        )+"%";
+
+
+    document
+    .getElementById("enemyHP")
+    .style.width=
+        enemy
+        ?Math.max(
+            0,
+            enemy.hp/
+            enemy.maxHP*
+            100
+        )+"%"
+        :"0%";
+
+
+    document
+    .getElementById("bossText")
+    .textContent=
+        isBossLevel(level)
+        ?"👑 "+getBossName(level)
+        :"";
+
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+function showMessage(text){
+
+    const el=
+        document.getElementById(
+            "message"
+        );
+
+
+    el.textContent=text;
+
+    messageTimer=100;
+
+}
+
+
+/* =====================================================
+   DRAW
+===================================================== */
+
+function draw(){
+
+    ctx.save();
+
+
+    if(screenShake>0){
+
+        ctx.translate(
+            (Math.random()-.5)*
+            screenShake,
+
+            (Math.random()-.5)*
+            screenShake
+        );
+
+        screenShake*=.8;
+
+        if(screenShake<.5)
+            screenShake=0;
+
+    }
+
+
+    drawBackground();
+
+    drawEnemy();
+
+    drawPlayer();
+
+    drawParticles();
+
+
+    ctx.restore();
+
+
+    if(
+        player.hp<
+        player.maxHP*.3
+    ){
+
+        ctx.fillStyle=
+            "rgba(255,0,0,.09)";
+
+        ctx.fillRect(
+            0,
+            0,
+            W,
+            H
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   GAME LOOP
+===================================================== */
+
+function loop(){
+
+    if(running){
+
+        updatePlayer();
+
+        updateEnemy();
+
+        updateParticles();
+
+        updateHUD();
+
+    }
+
+
+    draw();
+
+
+    if(messageTimer>0){
+
+        messageTimer--;
+
+        if(messageTimer<=0){
+
+            document
+            .getElementById("message")
+            .textContent="";
+
+        }
+
+    }
+
+
+    requestAnimationFrame(loop);
+
+}
+
+
+loop();
+
+</script>
+
+</body>
+</html>
