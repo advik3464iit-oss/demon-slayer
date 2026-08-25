@@ -3,15 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>Water Warriors - 50 Level Demon Battle</title>
+<title>Blade Breathing - 50 Levels</title>
 
 <style>
 *{
     box-sizing:border-box;
     margin:0;
     padding:0;
-    user-select:none;
-    -webkit-user-select:none;
     -webkit-tap-highlight-color:transparent;
 }
 
@@ -19,7 +17,7 @@ html,body{
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#071522;
+    background:#07111f;
     font-family:Arial,sans-serif;
     touch-action:none;
 }
@@ -32,81 +30,87 @@ canvas{
 
 #hud{
     position:fixed;
-    left:12px;
-    top:10px;
-    z-index:20;
+    left:14px;
+    top:12px;
+    z-index:10;
     color:white;
     font-weight:bold;
-    line-height:1.35;
     text-shadow:2px 2px 5px #000;
+    line-height:1.45;
     pointer-events:none;
 }
 
 .bar{
-    width:210px;
-    height:16px;
-    border:2px solid white;
-    background:#20252b;
-    border-radius:5px;
-    overflow:hidden;
-    margin:3px 0 7px;
+    width:190px;
+    height:15px;
+    background:#171717;
+    border:2px solid #aaa;
+    margin:3px 0 6px;
 }
 
-#playerBar{
-    width:100%;
+.fill{
     height:100%;
-    background:#2bd66f;
 }
 
-#enemyBar{
+#healthFill{
     width:100%;
-    height:100%;
-    background:#ef3340;
+    background:#28d66f;
 }
 
-#formText{
-    color:#63e6ff;
+#enemyFill{
+    width:100%;
+    background:#e63946;
 }
 
-#artText{
-    color:#ff6680;
+#guardFill{
+    width:100%;
+    background:#00d9ff;
+}
+
+#levelText{
+    color:#ffd166;
+}
+
+#characterText{
+    color:#8ecae6;
+}
+
+#bossText{
+    color:#ff4d6d;
 }
 
 #message{
     position:fixed;
-    z-index:30;
     left:50%;
-    top:38%;
+    top:42%;
     transform:translate(-50%,-50%);
+    z-index:25;
     color:white;
-    font-size:32px;
+    font-size:30px;
     font-weight:bold;
     text-align:center;
-    text-shadow:3px 3px 15px #000;
+    text-shadow:3px 3px 12px #000;
     pointer-events:none;
-    white-space:nowrap;
 }
 
 .screen{
     position:fixed;
     inset:0;
-    z-index:100;
+    z-index:50;
     display:flex;
-    flex-direction:column;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    background:rgba(2,7,15,.96);
     color:white;
     text-align:center;
     padding:20px;
-    background:
-        radial-gradient(circle at center,#163f5c,#040a10 75%);
 }
 
 .screen h1{
-    color:#64e7ff;
     font-size:52px;
-    margin-bottom:8px;
-    text-shadow:0 0 20px #008cff;
+    letter-spacing:3px;
+    margin-bottom:10px;
 }
 
 .screen h2{
@@ -115,49 +119,63 @@ canvas{
 }
 
 .screen p{
-    color:#d8e6ed;
-    margin:4px;
+    color:#ccc;
+    margin:5px;
 }
 
 button{
+    margin-top:18px;
+    padding:13px 30px;
     border:0;
-    border-radius:10px;
-    background:#087ea4;
+    border-radius:9px;
+    background:#e63946;
     color:white;
-    font-size:19px;
+    font-size:18px;
     font-weight:bold;
-    padding:14px 38px;
-    margin-top:22px;
-    box-shadow:0 5px 18px #000;
+    cursor:pointer;
 }
 
-button:active{
-    transform:scale(.95);
+button:hover{
+    filter:brightness(1.15);
+}
+
+.charButtons{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+    max-width:700px;
+}
+
+.charButtons button{
+    margin-top:5px;
+    padding:10px 14px;
+    background:#1769aa;
 }
 
 .hidden{
-    display:none!important;
+    display:none !important;
 }
 
-/* MOBILE */
+/* PHONE CONTROLS */
 
 #mobileControls{
     display:none;
     position:fixed;
     inset:0;
-    z-index:40;
+    z-index:30;
     pointer-events:none;
 }
 
 #joystickArea{
     position:absolute;
-    left:20px;
-    bottom:20px;
+    left:22px;
+    bottom:22px;
     width:145px;
     height:145px;
     border-radius:50%;
     background:rgba(255,255,255,.08);
-    border:2px solid rgba(255,255,255,.35);
+    border:2px solid rgba(255,255,255,.3);
     pointer-events:auto;
 }
 
@@ -169,53 +187,67 @@ button:active{
     height:60px;
     border-radius:50%;
     background:rgba(255,255,255,.3);
-    border:2px solid rgba(255,255,255,.65);
+    border:2px solid rgba(255,255,255,.55);
 }
 
-.mButton{
+.mobileButton{
     position:absolute;
+    width:68px;
+    height:68px;
     border-radius:50%;
-    width:72px;
-    height:72px;
     display:flex;
     align-items:center;
     justify-content:center;
+    text-align:center;
     color:white;
     font-size:11px;
     font-weight:bold;
+    user-select:none;
     pointer-events:auto;
-    border:2px solid rgba(255,255,255,.6);
+    border:2px solid rgba(255,255,255,.4);
+    background:rgba(20,30,45,.85);
 }
 
-#attackBtn{
-    right:22px;
-    bottom:28px;
-    background:rgba(210,40,55,.85);
+#attackButton{
+    right:25px;
+    bottom:30px;
+    background:rgba(210,40,50,.85);
 }
 
-#runBtn{
-    right:110px;
-    bottom:32px;
-    background:rgba(40,50,65,.9);
+#defendButton{
+    right:105px;
+    bottom:108px;
+    background:rgba(0,130,180,.85);
 }
 
-#formButtons{
-    position:absolute;
-    right:12px;
-    top:12px;
-    display:flex;
-    flex-direction:column;
-    gap:5px;
-    pointer-events:auto;
+#runButton{
+    right:108px;
+    bottom:30px;
 }
 
-.formButton{
-    width:58px;
-    height:38px;
-    padding:0;
-    margin:0;
-    font-size:10px;
-    background:#086b88;
+#form1{
+    right:25px;
+    bottom:112px;
+}
+
+#form2{
+    right:105px;
+    bottom:188px;
+}
+
+#form3{
+    right:185px;
+    bottom:112px;
+}
+
+#form4{
+    right:265px;
+    bottom:188px;
+}
+
+#form5{
+    right:345px;
+    bottom:112px;
 }
 
 @media(max-width:800px){
@@ -230,15 +262,15 @@ button:active{
 
     .bar{
         width:145px;
-        height:13px;
-    }
-
-    #message{
-        font-size:23px;
+        height:12px;
     }
 
     .screen h1{
-        font-size:37px;
+        font-size:34px;
+    }
+
+    .screen{
+        overflow:auto;
     }
 }
 </style>
@@ -255,25 +287,27 @@ LEVEL:
 
 <br>
 
-❤️ PLAYER
-
-<div class="bar">
-    <div id="playerBar"></div>
-</div>
-
-👹 DEMON
-
-<div class="bar">
-    <div id="enemyBar"></div>
-</div>
-
-💧 FORM:
-<span id="formText">Normal</span>
+CHARACTER:
+<span id="characterText">Tanjiro</span>
 
 <br>
 
-🩸 DEMON ART:
-<span id="artText">None</span>
+❤️ HEALTH
+<div class="bar">
+    <div id="healthFill" class="fill"></div>
+</div>
+
+🛡️ GUARD
+<div class="bar">
+    <div id="guardFill" class="fill"></div>
+</div>
+
+👹 ENEMY
+<div class="bar">
+    <div id="enemyFill" class="fill"></div>
+</div>
+
+<span id="bossText"></span>
 
 <br>
 
@@ -289,45 +323,78 @@ LEVEL:
 
 <div id="startScreen" class="screen">
 
-<h1>WATER WARRIORS</h1>
+<h1>⚔️ BLADE BREATHING</h1>
 
-<h2>50 LEVEL DEMON BATTLE</h2>
+<h2>50 LEVEL DEMON HUNT</h2>
 
-<p>⚔️ Side-view 2D sword combat</p>
-<p>💧 Five Water-style techniques</p>
-<p>👹 Demons attack you</p>
-<p>🩸 Demons have special abilities</p>
-<p>👑 Every 5th level is a boss</p>
-
-<br>
-
-<p>💻 A / D or Arrow Keys = Move</p>
-<p>⚔️ SPACE = Attack</p>
-<p>💧 1 2 3 4 5 = Water Forms</p>
-<p>🏃 SHIFT = Run</p>
+<p>🌊 Begin with Water-style warrior</p>
+<p>⚔️ Fight demons and powerful bosses</p>
+<p>🔥 Every level gets harder</p>
+<p>👹 Final battle awaits at Level 50</p>
 
 <br>
 
-<p>📱 Phone = Joystick + Attack + Forms</p>
+<p>💻 MOVE = WASD / ARROWS</p>
+<p>⚔️ SPACE = BASIC ATTACK</p>
+<p>🛡️ SHIFT = DEFENCE</p>
+<p>🔥 1 2 3 4 5 = BREATHING FORMS</p>
 
-<button onclick="startGame()">START GAME</button>
+<button onclick="showCharacters()">
+CHOOSE CHARACTER
+</button>
 
 </div>
 
 
-<!-- GAME OVER -->
+<!-- CHARACTER SELECT -->
 
-<div id="gameOver" class="screen hidden">
+<div id="characterScreen" class="screen hidden">
 
-<h1>DEFEATED</h1>
+<h1>CHOOSE WARRIOR</h1>
 
-<h2>The demon defeated you.</h2>
+<p>Select your starting character.</p>
 
-<p>Level reached:
-<span id="deadLevel">1</span>
-</p>
+<br>
 
-<button onclick="startGame()">TRY AGAIN</button>
+<div class="charButtons">
+
+<button onclick="selectCharacter('Tanjiro')">
+🌊 TANJIRO
+</button>
+
+<button onclick="selectCharacter('Inosuke')">
+🐗 INOSUKE
+</button>
+
+<button onclick="selectCharacter('Zenitsu')">
+⚡ ZENITSU
+</button>
+
+<button onclick="selectCharacter('WaterHashira')">
+💧 WATER HASHIRA
+</button>
+
+<button onclick="selectCharacter('FlameHashira')">
+🔥 FLAME HASHIRA
+</button>
+
+<button onclick="selectCharacter('WindHashira')">
+🌪️ WIND HASHIRA
+</button>
+
+<button onclick="selectCharacter('MistHashira')">
+🌫️ MIST HASHIRA
+</button>
+
+<button onclick="selectCharacter('StoneHashira')">
+🪨 STONE HASHIRA
+</button>
+
+<button onclick="selectCharacter('Yoriichi')">
+☀️ YORIICHI
+</button>
+
+</div>
 
 </div>
 
@@ -338,11 +405,30 @@ LEVEL:
 
 <h1>LEVEL CLEAR!</h1>
 
-<h2 id="completeMessage">
-Enemy defeated!
-</h2>
+<h2 id="completeText">Demon defeated!</h2>
 
-<button onclick="nextLevel()">NEXT LEVEL</button>
+<button onclick="nextLevel()">
+NEXT LEVEL
+</button>
+
+</div>
+
+
+<!-- GAME OVER -->
+
+<div id="gameOver" class="screen hidden">
+
+<h1>DEFEATED</h1>
+
+<h2>The demons won this battle.</h2>
+
+<p>Reached Level:
+<span id="deadLevel">1</span>
+</p>
+
+<button onclick="restartGame()">
+TRY AGAIN
+</button>
 
 </div>
 
@@ -351,13 +437,15 @@ Enemy defeated!
 
 <div id="victory" class="screen hidden">
 
-<h1>CHAMPION!</h1>
+<h1>☀️ CHAMPION!</h1>
 
-<h2>50 LEVELS COMPLETE</h2>
+<h2>ALL 50 LEVELS COMPLETE</h2>
 
-<p>You defeated the entire demon army.</p>
+<p>You defeated the final demon.</p>
 
-<button onclick="startGame()">PLAY AGAIN</button>
+<button onclick="restartGame()">
+PLAY AGAIN
+</button>
 
 </div>
 
@@ -366,27 +454,27 @@ Enemy defeated!
 
 <div id="mobileControls">
 
-<div id="formButtons">
-
-<button class="formButton" data-form="1">FORM 1</button>
-<button class="formButton" data-form="2">FORM 2</button>
-<button class="formButton" data-form="3">FORM 3</button>
-<button class="formButton" data-form="4">FORM 4</button>
-<button class="formButton" data-form="5">FORM 5</button>
-
-</div>
-
 <div id="joystickArea">
     <div id="joystick"></div>
 </div>
 
-<div id="runBtn" class="mButton">
-    RUN
+<div id="attackButton" class="mobileButton">
+⚔️ ATTACK
 </div>
 
-<div id="attackBtn" class="mButton">
-    ATTACK
+<div id="defendButton" class="mobileButton">
+🛡️ DEFEND
 </div>
+
+<div id="runButton" class="mobileButton">
+🏃 RUN
+</div>
+
+<div id="form1" class="mobileButton">1</div>
+<div id="form2" class="mobileButton">2</div>
+<div id="form3" class="mobileButton">3</div>
+<div id="form4" class="mobileButton">4</div>
+<div id="form5" class="mobileButton">5</div>
 
 </div>
 
@@ -397,58 +485,133 @@ Enemy defeated!
    CANVAS
 ========================================================= */
 
-const canvas =
-    document.getElementById("game");
-
-const ctx =
-    canvas.getContext("2d");
-
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
 
 function resize(){
-
     canvas.width=innerWidth;
     canvas.height=innerHeight;
-
 }
 
 resize();
-
 addEventListener("resize",resize);
 
 
 /* =========================================================
-   GAME STATE
+   GAME VARIABLES
 ========================================================= */
 
 let running=false;
 
 let level=1;
 let score=0;
+let health=100;
+let guard=100;
 
-let playerHP=100;
-
-let enemy=null;
-
-let projectiles=[];
+let enemies=[];
 let particles=[];
-let waterWaves=[];
 
 let keys={};
 
-let attackHeld=false;
-let runHeld=false;
-
-let currentForm=0;
-
-let attackCooldown=0;
-let playerHurt=0;
+let attackPressed=false;
+let defending=false;
 
 let messageTimer=0;
 
-let cameraX=0;
+let character="Tanjiro";
+
+let currentForm=0;
+let formTimer=0;
 
 const world={
-    width:4200
+    width:4000,
+    height:1800
+};
+
+const camera={
+    x:0,
+    y:0
+};
+
+
+/* =========================================================
+   CHARACTER DATA
+========================================================= */
+
+const characters={
+
+    Tanjiro:{
+        color:"#1769aa",
+        hair:"#111",
+        speed:4,
+        damage:32,
+        formName:"Water Breathing"
+    },
+
+    Inosuke:{
+        color:"#607d8b",
+        hair:"#6d4c41",
+        speed:4.7,
+        damage:35,
+        formName:"Beast Style"
+    },
+
+    Zenitsu:{
+        color:"#e9c46a",
+        hair:"#f4a261",
+        speed:5,
+        damage:38,
+        formName:"Thunder Style"
+    },
+
+    WaterHashira:{
+        color:"#2463a6",
+        hair:"#111",
+        speed:4.2,
+        damage:40,
+        formName:"Water Style"
+    },
+
+    FlameHashira:{
+        color:"#e76f00",
+        hair:"#ffb000",
+        speed:4.1,
+        damage:45,
+        formName:"Flame Style"
+    },
+
+    WindHashira:{
+        color:"#6a994e",
+        hair:"#d7d7d7",
+        speed:4.4,
+        damage:43,
+        formName:"Wind Style"
+    },
+
+    MistHashira:{
+        color:"#7b8fa1",
+        hair:"#c9d6df",
+        speed:4.5,
+        damage:42,
+        formName:"Mist Style"
+    },
+
+    StoneHashira:{
+        color:"#777",
+        hair:"#333",
+        speed:3.6,
+        damage:52,
+        formName:"Stone Style"
+    },
+
+    Yoriichi:{
+        color:"#8b0000",
+        hair:"#111",
+        speed:5.2,
+        damage:65,
+        formName:"Sun Style"
+    }
+
 };
 
 
@@ -458,105 +621,221 @@ const world={
 
 const player={
 
-    x:500,
-    y:0,
+    x:350,
+    y:900,
 
-    speed:4.2,
-    runSpeed:7,
+    radius:23,
 
-    direction:1,
+    speed:4,
 
-    attackAnimation:0,
-    frame:0
+    facing:0,
+
+    attackCooldown:0,
+    attackTimer:0,
+
+    invincible:0,
+
+    perfectGuard:0
 
 };
 
 
 /* =========================================================
-   FORMS
+   JOYSTICK
 ========================================================= */
 
-const forms={
+let joyX=0;
+let joyY=0;
 
-    1:{
-        name:"Flowing Slash",
-        damage:30,
-        range:125,
-        color:"#62e6ff"
-    },
+const joystickArea=
+document.getElementById("joystickArea");
 
-    2:{
-        name:"Water Wheel",
-        damage:43,
-        range:145,
-        color:"#22b8ff"
-    },
+const joystick=
+document.getElementById("joystick");
 
-    3:{
-        name:"Flowing Dance",
-        damage:38,
-        range:165,
-        color:"#48f0ff"
-    },
+function moveJoystick(touch){
 
-    4:{
-        name:"Tidal Strike",
-        damage:55,
-        range:185,
-        color:"#168cff"
-    },
+    const rect=
+        joystickArea.getBoundingClientRect();
 
-    5:{
-        name:"Crashing Water",
-        damage:78,
-        range:215,
-        color:"#b7f8ff"
+    let x=
+        touch.clientX-
+        rect.left-
+        rect.width/2;
+
+    let y=
+        touch.clientY-
+        rect.top-
+        rect.height/2;
+
+    const max=
+        rect.width/2-30;
+
+    const distance=
+        Math.hypot(x,y);
+
+    if(distance>max){
+
+        x=x/distance*max;
+        y=y/distance*max;
+
     }
 
-};
+    joyX=x/max;
+    joyY=y/max;
+
+    joystick.style.left=
+        rect.width/2-30+x+"px";
+
+    joystick.style.top=
+        rect.height/2-30+y+"px";
+}
+
+function resetJoystick(){
+
+    joyX=0;
+    joyY=0;
+
+    joystick.style.left="42px";
+    joystick.style.top="42px";
+}
+
+joystickArea.addEventListener(
+    "touchstart",
+    e=>{
+        e.preventDefault();
+        moveJoystick(e.touches[0]);
+    },
+    {passive:false}
+);
+
+joystickArea.addEventListener(
+    "touchmove",
+    e=>{
+        e.preventDefault();
+        moveJoystick(e.touches[0]);
+    },
+    {passive:false}
+);
+
+joystickArea.addEventListener(
+    "touchend",
+    e=>{
+        e.preventDefault();
+        resetJoystick();
+    },
+    {passive:false}
+);
 
 
 /* =========================================================
-   DEMON ART TYPES
+   MOBILE BUTTON HELPERS
 ========================================================= */
 
-const demonArts=[
+function holdButton(element,down,up){
 
-    "Blood Shockwave",
-    "Crimson Projectile",
-    "Demon Burst",
-    "Shadow Strike",
-    "Blood Ring"
+    element.addEventListener(
+        "touchstart",
+        e=>{
+            e.preventDefault();
+            down();
+        },
+        {passive:false}
+    );
 
-];
+    element.addEventListener(
+        "touchend",
+        e=>{
+            e.preventDefault();
+            up();
+        },
+        {passive:false}
+    );
+}
 
 
-/* =========================================================
-   GROUND
-========================================================= */
+/* ATTACK */
 
-function groundY(){
+holdButton(
+    document.getElementById("attackButton"),
+    ()=>{
+        attackPressed=true;
+    },
+    ()=>{
+        attackPressed=false;
+    }
+);
 
-    return canvas.height-175;
+
+/* DEFENCE */
+
+holdButton(
+    document.getElementById("defendButton"),
+    ()=>{
+        defending=true;
+    },
+    ()=>{
+        defending=false;
+    }
+);
+
+
+/* RUN */
+
+holdButton(
+    document.getElementById("runButton"),
+    ()=>{
+        keys["shift"]=true;
+    },
+    ()=>{
+        keys["shift"]=false;
+    }
+);
+
+
+/* FORMS */
+
+for(let i=1;i<=5;i++){
+
+    const button=
+        document.getElementById("form"+i);
+
+    button.addEventListener(
+        "touchstart",
+        e=>{
+            e.preventDefault();
+            useForm(i);
+        },
+        {passive:false}
+    );
 
 }
 
 
 /* =========================================================
-   INPUT
+   KEYBOARD
 ========================================================= */
 
 addEventListener("keydown",e=>{
 
     keys[e.key.toLowerCase()]=true;
 
+    /* SPACE REMAINS BASIC ATTACK */
+
     if(e.code==="Space"){
-        attackHeld=true;
+        attackPressed=true;
     }
 
+    /* SHIFT = DEFENCE */
+
+    if(e.key==="Shift"){
+        defending=true;
+    }
+
+    /* BREATHING */
+
     if(
-        ["1","2","3","4","5"]
-        .includes(e.key)
+        ["1","2","3","4","5"].includes(e.key)
     ){
 
         useForm(
@@ -573,7 +852,11 @@ addEventListener("keyup",e=>{
     keys[e.key.toLowerCase()]=false;
 
     if(e.code==="Space"){
-        attackHeld=false;
+        attackPressed=false;
+    }
+
+    if(e.key==="Shift"){
+        defending=false;
     }
 
 });
@@ -583,33 +866,66 @@ addEventListener("keyup",e=>{
    START
 ========================================================= */
 
-function startGame(){
+function showCharacters(){
+
+    document
+    .getElementById("startScreen")
+    .classList
+    .add("hidden");
+
+    document
+    .getElementById("characterScreen")
+    .classList
+    .remove("hidden");
+
+}
+
+
+function selectCharacter(name){
+
+    character=name;
+
+    document
+    .getElementById("characterScreen")
+    .classList
+    .add("hidden");
 
     level=1;
     score=0;
-    playerHP=100;
-
-    document
-        .getElementById("startScreen")
-        .classList.add("hidden");
-
-    document
-        .getElementById("gameOver")
-        .classList.add("hidden");
-
-    document
-        .getElementById("levelComplete")
-        .classList.add("hidden");
-
-    document
-        .getElementById("victory")
-        .classList.add("hidden");
+    health=100;
+    guard=100;
 
     setupLevel();
 
     running=true;
 
-    showMessage("LEVEL 1");
+    showMessage(
+        "LEVEL 1 — BEGIN!"
+    );
+
+}
+
+
+function restartGame(){
+
+    document
+    .getElementById("gameOver")
+    .classList
+    .add("hidden");
+
+    document
+    .getElementById("victory")
+    .classList
+    .add("hidden");
+
+    level=1;
+    score=0;
+    health=100;
+    guard=100;
+
+    setupLevel();
+
+    running=true;
 
 }
 
@@ -620,25 +936,51 @@ function startGame(){
 
 function setupLevel(){
 
-    player.x=450;
+    player.x=350;
+    player.y=
+        world.height/2;
 
-    player.y=groundY();
+    player.attackCooldown=0;
+    player.attackTimer=0;
 
-    player.direction=1;
+    player.invincible=0;
 
-    player.attackAnimation=0;
+    defending=false;
 
-    currentForm=0;
+    guard=100;
 
-    attackCooldown=0;
-
-    playerHurt=0;
-
-    projectiles=[];
+    enemies=[];
     particles=[];
-    waterWaves=[];
 
-    createDemon();
+    const enemyCount=
+        Math.min(
+            8,
+            1+
+            Math.floor(level/3)
+        );
+
+
+    /*
+    Every 5th level = boss.
+    */
+
+    if(level%5===0){
+
+        createBoss();
+
+    }
+
+
+    for(
+        let i=0;
+        i<enemyCount;
+        i++
+    ){
+
+        createEnemy(i);
+
+    }
+
 
     updateHUD();
 
@@ -646,166 +988,125 @@ function setupLevel(){
 
 
 /* =========================================================
-   CREATE DEMON
+   ENEMIES
 ========================================================= */
 
-function createDemon(){
+function createEnemy(i){
 
-    const boss=
-        level%5===0;
+    const side=
+        Math.random()<.5
+        ?-1
+        :1;
 
-    const artIndex=
-        (level-1)%demonArts.length;
+    enemies.push({
 
-    enemy={
+        x:
+            player.x+
+            side*
+            (500+
+            Math.random()*800),
 
-        x:2700,
+        y:
+            300+
+            Math.random()*
+            1200,
 
-        y:groundY(),
-
-        health:
-            boss
-            ?300+level*22
-            :80+level*10,
+        radius:23,
 
         maxHealth:
-            boss
-            ?300+level*22
-            :80+level*10,
+            55+
+            level*8,
+
+        health:
+            55+
+            level*8,
 
         speed:
-            boss
-            ?1.35+level*.045
-            :1.05+level*.035,
+            1.2+
+            level*.045,
 
         damage:
-            boss
-            ?0.42+level*.012
-            :0.20+level*.012,
+            .18+
+            level*.025,
 
-        boss:boss,
+        attackCooldown:
+            Math.random()*60,
 
-        art:
-            demonArts[artIndex],
+        boss:false,
 
-        artCooldown:
-            100,
+        color:
+            level>=39
+            ?" #6a00ff"
+            :"#8d1b1b",
 
-        hurt:0,
+        stun:0
 
-        attackAnimation:0
-
-    };
-
-}
-
-
-/* =========================================================
-   USE FORM
-========================================================= */
-
-function useForm(n){
-
-    if(!running) return;
-
-    currentForm=n;
-
-    showMessage(
-        forms[n].name
-    );
-
-    attack();
+    });
 
 }
 
 
-/* =========================================================
-   PLAYER ATTACK
-========================================================= */
+function createBoss(){
 
-function attack(){
+    let bossName;
 
-    if(attackCooldown>0)
-        return;
+    if(level<40)
+        bossName="Lower Moon";
+    else if(level<50)
+        bossName="Upper Moon";
+    else
+        bossName="Muzan";
 
-    attackCooldown=24;
 
-    player.attackAnimation=12;
+    let hp=
+        level===50
+        ?1800
+        :500+
+        level*35;
 
-    let damage=18;
-    let range=105;
 
-    if(currentForm>0){
+    enemies.push({
 
-        damage=
-            forms[currentForm].damage;
+        x:
+            world.width-500,
 
-        range=
-            forms[currentForm].range;
+        y:
+            world.height/2,
 
-    }
+        radius:
+            level===50
+            ?55
+            :40,
 
-    if(!enemy)
-        return;
+        maxHealth:hp,
+        health:hp,
 
-    const dx=
-        enemy.x-player.x;
+        speed:
+            level===50
+            ?2.8
+            :1.4+
+            level*.045,
 
-    const correctSide=
-        player.direction===1
-        ?dx>-25
-        :dx<25;
+        damage:
+            level===50
+            ?.65
+            :.3+
+            level*.025,
 
-    if(
-        Math.abs(dx)<=range &&
-        correctSide
-    ){
+        attackCooldown:60,
 
-        enemy.health-=damage;
+        boss:true,
 
-        enemy.hurt=8;
+        name:bossName,
 
-        createParticles(
-            enemy.x,
-            enemy.y-65,
-            currentForm
-            ?forms[currentForm].color
-            :"#fff",
-            12
-        );
+        color:
+            level===50
+            ?" #850000"
+            :"#5a189a",
 
-        if(currentForm>0){
+        stun:0
 
-            waterWaves.push({
-
-                x:
-                    player.x+
-                    player.direction*70,
-
-                y:
-                    player.y-65,
-
-                life:28,
-
-                form:currentForm,
-
-                direction:
-                    player.direction,
-
-                color:
-                    forms[currentForm].color
-
-            });
-
-        }
-
-        if(enemy.health<=0){
-
-            defeatEnemy();
-
-        }
-
-    }
+    });
 
 }
 
@@ -816,459 +1117,253 @@ function attack(){
 
 function updatePlayer(){
 
-    let move=0;
+    let dx=0;
+    let dy=0;
+
+
+    if(keys["w"]||keys["arrowup"])
+        dy--;
+
+    if(keys["s"]||keys["arrowdown"])
+        dy++;
+
+    if(keys["a"]||keys["arrowleft"])
+        dx--;
+
+    if(keys["d"]||keys["arrowright"])
+        dx++;
+
 
     if(
-        keys["a"]||
-        keys["arrowleft"]
+        Math.abs(joyX)>.05||
+        Math.abs(joyY)>.05
     ){
 
-        move=-1;
+        dx=joyX;
+        dy=joyY;
 
     }
+
+
+    if(dx!==0||dy!==0){
+
+        const length=
+            Math.hypot(dx,dy);
+
+        dx/=length;
+        dy/=length;
+
+
+        const data=
+            characters[character];
+
+        let speed=
+            data.speed;
+
+
+        if(keys["shift"])
+            speed*=1.45;
+
+
+        /*
+        Defence slightly slows player.
+        */
+
+        if(defending)
+            speed*=.55;
+
+
+        player.x+=
+            dx*speed;
+
+        player.y+=
+            dy*speed;
+
+
+        player.x=
+            Math.max(
+                60,
+                Math.min(
+                    world.width-60,
+                    player.x
+                )
+            );
+
+        player.y=
+            Math.max(
+                100,
+                Math.min(
+                    world.height-100,
+                    player.y
+                )
+            );
+
+
+        player.facing=
+            Math.atan2(dy,dx);
+
+    }
+
+
+    if(player.attackCooldown>0)
+        player.attackCooldown--;
+
+    if(player.attackTimer>0)
+        player.attackTimer--;
+
+    if(player.invincible>0)
+        player.invincible--;
+
+    if(player.perfectGuard>0)
+        player.perfectGuard--;
+
+
+    /*
+    GUARD REGEN
+    */
+
+    if(!defending){
+
+        guard=
+            Math.min(
+                100,
+                guard+.18
+            );
+
+    }
+    else{
+
+        guard=
+            Math.max(
+                0,
+                guard-.45
+            );
+
+        if(guard<=0){
+
+            defending=false;
+
+        }
+
+    }
+
+
+    /*
+    BASIC ATTACK
+    */
 
     if(
-        keys["d"]||
-        keys["arrowright"]
+        attackPressed &&
+        player.attackCooldown<=0
     ){
-
-        move=1;
-
-    }
-
-    if(
-        Math.abs(joyX)>.1
-    ){
-
-        move=
-            joyX>0
-            ?1
-            :-1;
-
-    }
-
-    const speed=
-        keys["shift"]||
-        runHeld
-        ?player.runSpeed
-        :player.speed;
-
-    player.x+=
-        move*speed;
-
-    if(move!==0){
-
-        player.direction=move;
-
-        player.frame++;
-
-    }
-
-    player.x=Math.max(
-        100,
-        Math.min(
-            world.width-100,
-            player.x
-        )
-    );
-
-
-    if(attackHeld){
 
         attack();
 
     }
 
 
-    if(attackCooldown>0)
-        attackCooldown--;
-
-    if(player.attackAnimation>0)
-        player.attackAnimation--;
-
-    if(playerHurt>0)
-        playerHurt--;
-
-    player.y=groundY();
-
-
-    cameraX=
+    camera.x=
         player.x-
-        canvas.width*.38;
+        canvas.width/2;
 
-    cameraX=Math.max(
-        0,
-        Math.min(
-            world.width-canvas.width,
-            cameraX
-        )
-    );
+    camera.y=
+        player.y-
+        canvas.height/2;
+
+
+    camera.x=
+        Math.max(
+            0,
+            Math.min(
+                world.width-
+                canvas.width,
+                camera.x
+            )
+        );
+
+    camera.y=
+        Math.max(
+            0,
+            Math.min(
+                world.height-
+                canvas.height,
+                camera.y
+            )
+        );
 
 }
 
 
 /* =========================================================
-   DEMON UPDATE
+   BASIC ATTACK
 ========================================================= */
 
-function updateDemon(){
+function attack(){
 
-    if(!enemy)
-        return;
-
-
-    const dx=
-        player.x-enemy.x;
-
-    const distance=
-        Math.abs(dx);
+    player.attackCooldown=22;
+    player.attackTimer=10;
 
 
-    /*
-       Demon movement
-    */
-
-    if(distance>75){
-
-        enemy.x+=
-            Math.sign(dx)*
-            enemy.speed;
-
-    }
+    const data=
+        characters[character];
 
 
-    /*
-       Demon close attack
-    */
-
-    if(distance<=90){
-
-        demonMelee();
-
-    }
+    const range=
+        character==="Yoriichi"
+        ?125
+        :95;
 
 
-    /*
-       Blood Demon Art
-    */
-
-    enemy.artCooldown--;
-
-    if(
-        enemy.artCooldown<=0 &&
-        distance<650
+    for(
+        const enemy of enemies
     ){
 
-        demonArtAttack();
+        const dx=
+            enemy.x-
+            player.x;
 
-        enemy.artCooldown=
-            enemy.boss
-            ?70
-            :120;
+        const dy=
+            enemy.y-
+            player.y;
 
-    }
+        const distance=
+            Math.hypot(dx,dy);
 
 
-    if(enemy.hurt>0)
-        enemy.hurt--;
+        if(distance<=range){
 
-}
+            /*
+            Damage.
+            */
 
+            enemy.health-=
+                data.damage;
 
-/* =========================================================
-   DEMON MELEE
-========================================================= */
 
-function demonMelee(){
+            enemy.stun=8;
 
-    if(!enemy)
-        return;
-
-    if(
-        enemy.attackAnimation>0
-    ){
-
-        enemy.attackAnimation--;
-
-        return;
-
-    }
-
-    enemy.attackAnimation=45;
-
-    playerHP-=enemy.damage;
-
-    playerHurt=12;
-
-    createParticles(
-        player.x,
-        player.y-70,
-        "#ff334f",
-        15
-    );
-
-    if(playerHP<=0){
-
-        playerHP=0;
-
-        gameOver();
-
-    }
-
-}
-
-
-/* =========================================================
-   DEMON ART
-========================================================= */
-
-function demonArtAttack(){
-
-    if(!enemy)
-        return;
-
-
-    const art=
-        enemy.art;
-
-
-    if(art==="Blood Shockwave"){
-
-        projectiles.push({
-
-            x:enemy.x,
-
-            y:enemy.y-70,
-
-            vx:
-                Math.sign(
-                    player.x-enemy.x
-                )*5,
-
-            vy:0,
-
-            radius:24,
-
-            damage:
-                enemy.boss
-                ?16
-                :9,
-
-            color:"#e51c46",
-
-            type:"wave",
-
-            life:180
-
-        });
-
-    }
-
-
-    if(art==="Crimson Projectile"){
-
-        projectiles.push({
-
-            x:enemy.x,
-
-            y:enemy.y-80,
-
-            vx:
-                Math.sign(
-                    player.x-enemy.x
-                )*6,
-
-            vy:
-                (player.y-enemy.y)*.01,
-
-            radius:12,
-
-            damage:
-                enemy.boss
-                ?13
-                :7,
-
-            color:"#ff3155",
-
-            type:"orb",
-
-            life:180
-
-        });
-
-    }
-
-
-    if(art==="Demon Burst"){
-
-        const direction=
-            Math.sign(
-                player.x-enemy.x
-            );
-
-        for(
-            let i=-1;
-            i<=1;
-            i++
-        ){
-
-            projectiles.push({
-
-                x:enemy.x,
-
-                y:enemy.y-70,
-
-                vx:
-                    direction*4.5,
-
-                vy:
-                    i*2,
-
-                radius:13,
-
-                damage:
-                    enemy.boss
-                    ?12
-                    :8,
-
-                color:"#ff7b00",
-
-                type:"burst",
-
-                life:150
-
-            });
-
-        }
-
-    }
-
-
-    if(art==="Shadow Strike"){
-
-        /*
-        Short-range teleport-style strike.
-        */
-
-        if(
-            Math.abs(
-                player.x-enemy.x
-            )<500
-        ){
-
-            enemy.x=
-                player.x+
-                (player.x>enemy.x?-140:140);
 
             createParticles(
                 enemy.x,
-                enemy.y-70,
-                "#8b5cf6",
-                25
-            );
-
-        }
-
-    }
-
-
-    if(art==="Blood Ring"){
-
-        const direction=
-            Math.sign(
-                player.x-enemy.x
-            );
-
-        projectiles.push({
-
-            x:
-                enemy.x+
-                direction*30,
-
-            y:
-                enemy.y-70,
-
-            vx:
-                direction*3,
-
-            vy:0,
-
-            radius:38,
-
-            damage:
-                enemy.boss
-                ?18
-                :10,
-
-            color:"#ff1744",
-
-            type:"ring",
-
-            life:140
-
-        });
-
-    }
-
-
-    createParticles(
-        enemy.x,
-        enemy.y-70,
-        "#ff164c",
-        18
-    );
-
-}
-
-
-/* =========================================================
-   PROJECTILE UPDATE
-========================================================= */
-
-function updateProjectiles(){
-
-    for(
-        const p of projectiles
-    ){
-
-        p.x+=p.vx;
-        p.y+=p.vy;
-
-        p.life--;
-
-
-        const dx=
-            p.x-player.x;
-
-        const dy=
-            p.y-(player.y-65);
-
-
-        if(
-            Math.hypot(dx,dy)
-            <
-            p.radius+28
-        ){
-
-            playerHP-=p.damage;
-
-            playerHurt=10;
-
-            p.life=0;
-
-            createParticles(
-                player.x,
-                player.y-65,
-                p.color,
-                15
+                enemy.y,
+                data.color,
+                8
             );
 
 
-            if(playerHP<=0){
+            if(enemy.health<=0){
 
-                playerHP=0;
+                score+=
+                    enemy.boss
+                    ?1000
+                    :100;
 
-                gameOver();
+                createParticles(
+                    enemy.x,
+                    enemy.y,
+                    "#ffd166",
+                    22
+                );
 
             }
 
@@ -1277,140 +1372,350 @@ function updateProjectiles(){
     }
 
 
-    projectiles=
-        projectiles.filter(
-            p=>p.life>0
+    enemies=
+        enemies.filter(
+            e=>e.health>0
         );
 
-}
 
+    if(enemies.length===0){
 
-/* =========================================================
-   DEFEAT
-========================================================= */
+        completeLevel();
 
-function defeatEnemy(){
-
-    if(!enemy)
-        return;
-
-    score+=
-        enemy.boss
-        ?1000
-        :100;
-
-    createParticles(
-        enemy.x,
-        enemy.y-70,
-        "#ffd166",
-        35
-    );
-
-    enemy=null;
-
-    setTimeout(()=>{
-
-        if(running){
-
-            completeLevel();
-
-        }
-
-    },500);
+    }
 
 }
 
 
 /* =========================================================
-   LEVEL COMPLETE
+   BREATHING FORMS
 ========================================================= */
 
-function completeLevel(){
+function useForm(form){
 
     if(!running)
         return;
 
-    running=false;
+
+    currentForm=form;
+
+    formTimer=25;
 
 
-    if(level>=50){
+    let damageMultiplier=1;
 
-        document
-            .getElementById("victory")
-            .classList.remove("hidden");
+
+    if(character==="Tanjiro")
+        damageMultiplier=
+            1+
+            form*.18;
+
+    else
+        damageMultiplier=
+            1+
+            form*.12;
+
+
+    const data=
+        characters[character];
+
+
+    for(
+        const enemy of enemies
+    ){
+
+        const d=
+            Math.hypot(
+                enemy.x-player.x,
+                enemy.y-player.y
+            );
+
+
+        if(
+            d<
+            120+
+            form*18
+        ){
+
+            enemy.health-=
+                data.damage*
+                damageMultiplier;
+
+            enemy.stun=
+                12+
+                form*4;
+
+
+            createParticles(
+                enemy.x,
+                enemy.y,
+                getFormColor(form),
+                12
+            );
+
+        }
+
+    }
+
+
+    enemies=
+        enemies.filter(
+            e=>e.health>0
+        );
+
+
+    showMessage(
+        getFormName(form)
+    );
+
+
+    if(enemies.length===0){
+
+        completeLevel();
+
+    }
+
+}
+
+
+function getFormName(form){
+
+    if(character==="Tanjiro"){
+
+        const forms=[
+            "🌊 Water Form I",
+            "🌊 Water Form II",
+            "🌊 Water Form III",
+            "🌊 Water Form IV",
+            "🌊 Water Form V"
+        ];
+
+        return forms[form-1];
+
+    }
+
+
+    if(character==="Yoriichi"){
+
+        return "☀️ Sun Breathing Form "+form;
+
+    }
+
+
+    return characters[character]
+        .formName+
+        " Form "+
+        form;
+
+}
+
+
+function getFormColor(form){
+
+    if(character==="Yoriichi")
+        return "#ffb703";
+
+    if(character==="FlameHashira")
+        return "#ff6b00";
+
+    if(character==="Zenitsu")
+        return "#ffe66d";
+
+    if(character==="WindHashira")
+        return "#80ed99";
+
+    if(character==="MistHashira")
+        return "#c8d6e5";
+
+    return "#00b4d8";
+
+}
+
+
+/* =========================================================
+   ENEMY UPDATE
+========================================================= */
+
+function updateEnemies(){
+
+    for(
+        const enemy of enemies
+    ){
+
+        if(enemy.stun>0){
+
+            enemy.stun--;
+            continue;
+
+        }
+
+
+        enemy.attackCooldown--;
+
+
+        const dx=
+            player.x-
+            enemy.x;
+
+        const dy=
+            player.y-
+            enemy.y;
+
+        const d=
+            Math.hypot(dx,dy);
+
+
+        /*
+        Move toward player.
+        */
+
+        if(d>58){
+
+            const nx=dx/d;
+            const ny=dy/d;
+
+
+            enemy.x+=
+                nx*enemy.speed;
+
+            enemy.y+=
+                ny*enemy.speed;
+
+        }
+        else{
+
+            /*
+            Enemy attacks.
+            */
+
+            if(
+                enemy.attackCooldown<=0
+            ){
+
+                enemyAttack(enemy);
+
+                enemy.attackCooldown=
+                    enemy.boss
+                    ?35
+                    :55;
+
+            }
+
+        }
+
+
+        enemy.x=
+            Math.max(
+                50,
+                Math.min(
+                    world.width-50,
+                    enemy.x
+                )
+            );
+
+        enemy.y=
+            Math.max(
+                80,
+                Math.min(
+                    world.height-80,
+                    enemy.y
+                )
+            );
+
+    }
+
+
+    if(health<=0)
+        gameOver();
+
+}
+
+
+/* =========================================================
+   ENEMY ATTACK + DEFENCE
+========================================================= */
+
+function enemyAttack(enemy){
+
+    /*
+    THIS IS THE NEW DEFENCE SYSTEM.
+
+    SPACE remains attack.
+    SHIFT remains defence.
+    */
+
+
+    if(defending && guard>5){
+
+        /*
+        Block most damage.
+        */
+
+        guard=
+            Math.max(
+                0,
+                guard-18
+            );
+
+
+        createParticles(
+            player.x,
+            player.y,
+            "#00d9ff",
+            15
+        );
+
+
+        /*
+        Perfect guard if guard is high.
+        */
+
+        if(guard>55){
+
+            enemy.stun=45;
+
+            player.perfectGuard=30;
+
+            showMessage(
+                "🛡️ PERFECT GUARD!"
+            );
+
+        }
+        else{
+
+            showMessage(
+                "🛡️ BLOCKED!"
+            );
+
+        }
+
 
         return;
 
     }
 
 
-    document
-        .getElementById("completeMessage")
-        .textContent=
-        level%5===0
-        ?"BOSS DEFEATED! 🔥"
-        :"Demon defeated! ⚔️";
+    /*
+    Normal damage.
+    */
 
-
-    document
-        .getElementById("levelComplete")
-        .classList.remove("hidden");
-
-}
-
-
-/* =========================================================
-   NEXT LEVEL
-========================================================= */
-
-function nextLevel(){
-
-    document
-        .getElementById("levelComplete")
-        .classList.add("hidden");
-
-    level++;
-
-    playerHP=
-        Math.min(
-            100,
-            playerHP+20
-        );
-
-    setupLevel();
-
-    running=true;
-
-    showMessage(
-        "LEVEL "+level+
-        (
-            level%5===0
-            ?" — BOSS"
-            :""
-        )
-    );
-
-}
-
-
-/* =========================================================
-   GAME OVER
-========================================================= */
-
-function gameOver(){
-
-    if(!running)
+    if(player.invincible>0)
         return;
 
-    running=false;
 
-    document
-        .getElementById("deadLevel")
-        .textContent=level;
+    health-=
+        enemy.damage;
 
-    document
-        .getElementById("gameOver")
-        .classList.remove("hidden");
+
+    player.invincible=20;
+
+
+    createParticles(
+        player.x,
+        player.y,
+        "#ff3b30",
+        8
+    );
 
 }
 
@@ -1423,7 +1728,7 @@ function createParticles(
     x,
     y,
     color,
-    amount
+    amount=10
 ){
 
     for(
@@ -1433,26 +1738,30 @@ function createParticles(
     ){
 
         const angle=
-            Math.random()*Math.PI*2;
+            Math.random()*
+            Math.PI*2;
 
         const speed=
-            1.5+
+            1+
             Math.random()*5;
+
 
         particles.push({
 
             x:x,
             y:y,
 
-            vx:
-                Math.cos(angle)*speed,
+            dx:
+                Math.cos(angle)*
+                speed,
 
-            vy:
-                Math.sin(angle)*speed,
+            dy:
+                Math.sin(angle)*
+                speed,
 
             life:
-                25+
-                Math.random()*25,
+                20+
+                Math.random()*30,
 
             color:color
 
@@ -1463,191 +1772,138 @@ function createParticles(
 }
 
 
-/* =========================================================
-   EFFECT UPDATE
-========================================================= */
-
-function updateEffects(){
+function updateParticles(){
 
     for(
         const p of particles
     ){
 
-        p.x+=p.vx;
-        p.y+=p.vy;
-
-        p.vy+=.08;
+        p.x+=p.dx;
+        p.y+=p.dy;
 
         p.life--;
 
     }
+
 
     particles=
         particles.filter(
             p=>p.life>0
         );
 
-
-    for(
-        const w of waterWaves
-    ){
-
-        w.life--;
-
-        w.x+=
-            w.direction*3;
-
-    }
-
-    waterWaves=
-        waterWaves.filter(
-            w=>w.life>0
-        );
-
 }
 
 
 /* =========================================================
-   BACKGROUND
+   DRAW WORLD
 ========================================================= */
 
-function drawBackground(){
+function drawWorld(){
 
-    const sky=
-        ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            canvas.height
-        );
+    /*
+    Sky / background.
+    */
 
-    sky.addColorStop(
-        0,
-        "#07192d"
-    );
-
-    sky.addColorStop(
-        .55,
-        "#15506d"
-    );
-
-    sky.addColorStop(
-        1,
-        "#79a9ad"
-    );
-
-    ctx.fillStyle=sky;
+    ctx.fillStyle="#101b2d";
 
     ctx.fillRect(
         0,
         0,
-        canvas.width,
-        canvas.height
+        world.width,
+        world.height
     );
 
 
-    /* moon */
+    /*
+    Ground.
+    */
 
-    ctx.fillStyle="#fff4bd";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        canvas.width-120,
-        90,
-        42,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
-
-    /* mountains */
-
-    ctx.fillStyle="#102a40";
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        0,
-        groundY()+30
-    );
-
-    for(
-        let x=0;
-        x<canvas.width+300;
-        x+=180
-    ){
-
-        ctx.lineTo(
-            x,
-            groundY()-
-            120-
-            Math.sin(x*.012)*60
-        );
-
-        ctx.lineTo(
-            x+90,
-            groundY()+30
-        );
-
-    }
-
-    ctx.lineTo(
-        canvas.width,
-        canvas.height
-    );
-
-    ctx.lineTo(
-        0,
-        canvas.height
-    );
-
-    ctx.closePath();
-
-    ctx.fill();
-
-
-    /* ground */
-
-    ctx.fillStyle="#273b31";
+    ctx.fillStyle="#183d35";
 
     ctx.fillRect(
         0,
-        groundY()+5,
-        canvas.width,
-        canvas.height-groundY()
+        350,
+        world.width,
+        1100
     );
 
 
-    /* grass */
+    /*
+    Horizon.
+    */
 
-    ctx.strokeStyle="#416b48";
+    ctx.fillStyle="#263b63";
+
+    ctx.fillRect(
+        0,
+        0,
+        world.width,
+        350
+    );
+
+
+    /*
+    Ground lines.
+    */
+
+    ctx.strokeStyle=
+        "rgba(255,255,255,.06)";
 
     ctx.lineWidth=2;
 
+
     for(
-        let x=-cameraX%55;
-        x<canvas.width;
-        x+=55
+        let x=0;
+        x<world.width;
+        x+=100
     ){
 
         ctx.beginPath();
 
-        ctx.moveTo(
-            x,
-            groundY()+15
-        );
-
-        ctx.lineTo(
-            x+10,
-            groundY()+3
-        );
+        ctx.moveTo(x,350);
+        ctx.lineTo(x,world.height);
 
         ctx.stroke();
 
     }
+
+
+    /*
+    Mountains.
+    */
+
+    ctx.fillStyle="#152238";
+
+    for(
+        let x=0;
+        x<world.width;
+        x+=500
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(x,350);
+        ctx.lineTo(x+250,130);
+        ctx.lineTo(x+500,350);
+
+        ctx.fill();
+
+    }
+
+
+    /*
+    Arena border.
+    */
+
+    ctx.strokeStyle="#d4a017";
+    ctx.lineWidth=10;
+
+    ctx.strokeRect(
+        25,
+        350,
+        world.width-50,
+        1050
+    );
 
 }
 
@@ -1658,29 +1914,35 @@ function drawBackground(){
 
 function drawPlayer(){
 
+    const data=
+        characters[character];
+
+
     ctx.save();
 
     ctx.translate(
-        player.x-cameraX,
+        player.x,
         player.y
     );
 
-    ctx.scale(
-        player.direction,
-        1
+    ctx.rotate(
+        player.facing
     );
 
 
-    /* shadow */
+    /*
+    Shadow.
+    */
 
-    ctx.fillStyle="rgba(0,0,0,.4)";
+    ctx.fillStyle=
+        "rgba(0,0,0,.45)";
 
     ctx.beginPath();
 
     ctx.ellipse(
         0,
-        8,
-        42,
+        35,
+        34,
         10,
         0,
         0,
@@ -1690,174 +1952,69 @@ function drawPlayer(){
     ctx.fill();
 
 
-    /* legs */
+    /*
+    Legs.
+    */
 
-    ctx.fillStyle="#111923";
-
-    ctx.fillRect(
-        -18,
-        -45,
-        14,
-        45
-    );
+    ctx.fillStyle="#18212b";
 
     ctx.fillRect(
-        5,
-        -45,
-        14,
-        45
-    );
-
-
-    /* shoes */
-
-    ctx.fillStyle="#090d11";
-
-    ctx.fillRect(
-        -23,
-        -5,
-        22,
-        8
+        -13,
+        12,
+        10,
+        30
     );
 
     ctx.fillRect(
         4,
-        -5,
-        23,
-        8
-    );
-
-
-    /* coat */
-
-    ctx.fillStyle="#173c58";
-
-    ctx.beginPath();
-
-    ctx.moveTo(-31,-108);
-    ctx.lineTo(30,-108);
-    ctx.lineTo(32,-43);
-    ctx.lineTo(-32,-43);
-
-    ctx.closePath();
-
-    ctx.fill();
-
-
-    /* blue outer panels */
-
-    ctx.fillStyle="#126782";
-
-    ctx.beginPath();
-
-    ctx.moveTo(-32,-108);
-    ctx.lineTo(-14,-114);
-    ctx.lineTo(-7,-45);
-    ctx.lineTo(-32,-40);
-
-    ctx.closePath();
-
-    ctx.fill();
-
-
-    ctx.fillStyle="#0b5671";
-
-    ctx.beginPath();
-
-    ctx.moveTo(32,-108);
-    ctx.lineTo(14,-114);
-    ctx.lineTo(7,-45);
-    ctx.lineTo(32,-40);
-
-    ctx.closePath();
-
-    ctx.fill();
-
-
-    /* neck */
-
-    ctx.fillStyle="#c98266";
-
-    ctx.fillRect(
-        -7,
-        -119,
-        14,
-        14
-    );
-
-
-    /* face */
-
-    ctx.fillStyle="#c98266";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        -135,
-        25,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
-
-    /* hair */
-
-    ctx.fillStyle="#16181c";
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        -28,-137
-    );
-
-    ctx.quadraticCurveTo(
-        -22,-169,
-        0,-166
-    );
-
-    ctx.quadraticCurveTo(
-        24,-169,
-        29,-137
-    );
-
-    ctx.lineTo(
-        17,-148
-    );
-
-    ctx.lineTo(
-        8,-137
-    );
-
-    ctx.lineTo(
-        0,-151
-    );
-
-    ctx.lineTo(
-        -9,-138
-    );
-
-    ctx.lineTo(
-        -19,-149
-    );
-
-    ctx.closePath();
-
-    ctx.fill();
-
-
-    /* eye */
-
-    ctx.fillStyle="#101010";
-
-    ctx.beginPath();
-
-    ctx.arc(
+        12,
         10,
-        -134,
-        3,
+        30
+    );
+
+
+    /*
+    Body / uniform.
+    */
+
+    ctx.fillStyle=
+        data.color;
+
+    ctx.fillRect(
+        -19,
+        -13,
+        38,
+        34
+    );
+
+
+    /*
+    Haori-like shoulder layer.
+    */
+
+    ctx.fillStyle=
+        "rgba(255,255,255,.18)";
+
+    ctx.fillRect(
+        -20,
+        -13,
+        40,
+        9
+    );
+
+
+    /*
+    Head.
+    */
+
+    ctx.fillStyle="#c98b6b";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -30,
+        15,
         0,
         Math.PI*2
     );
@@ -1865,118 +2022,174 @@ function drawPlayer(){
     ctx.fill();
 
 
-    /* forehead mark */
+    /*
+    Hair.
+    */
 
-    ctx.fillStyle="#b62042";
+    ctx.fillStyle=
+        data.hair;
 
     ctx.beginPath();
 
-    ctx.moveTo(-7,-157);
-    ctx.lineTo(5,-153);
-    ctx.lineTo(1,-144);
-    ctx.lineTo(-9,-150);
-
-    ctx.closePath();
+    ctx.arc(
+        0,
+        -35,
+        16,
+        Math.PI,
+        Math.PI*2
+    );
 
     ctx.fill();
 
 
-    /* arm */
+    /*
+    Face.
+    */
 
-    ctx.fillStyle="#c98266";
-
-    ctx.fillRect(
-        16,
-        -98,
-        12,
-        48
-    );
-
-
-    /* sword */
-
-    ctx.save();
-
-    ctx.translate(
-        28,
-        -86
-    );
-
-    ctx.rotate(
-        player.attackAnimation>0
-        ?-.8
-        :-0.15
-    );
-
-    ctx.fillStyle="#e8f2f7";
+    ctx.fillStyle="#111";
 
     ctx.fillRect(
-        0,
-        -4,
-        84,
-        7
+        5,
+        -31,
+        3,
+        3
     );
 
-    ctx.fillStyle="#0f6f8c";
+
+    /*
+    Arms.
+    */
+
+    ctx.fillStyle="#c98b6b";
 
     ctx.fillRect(
-        -9,
+        -27,
+        -10,
+        9,
+        23
+    );
+
+    ctx.fillRect(
+        18,
+        -10,
+        9,
+        23
+    );
+
+
+    /*
+    Sword.
+    */
+
+    ctx.fillStyle="#d9e2ec";
+
+    ctx.fillRect(
+        18,
+        -5,
+        45,
+        5
+    );
+
+
+    ctx.fillStyle="#222";
+
+    ctx.fillRect(
+        13,
         -7,
-        12,
-        13
+        10,
+        9
     );
 
-    ctx.restore();
 
+    /*
+    Attack effect.
+    */
 
-    /* water aura */
-
-    if(
-        currentForm>0
-    ){
+    if(player.attackTimer>0){
 
         ctx.strokeStyle=
-            forms[currentForm].color;
+            getFormColor(
+                currentForm||1
+            );
 
-        ctx.lineWidth=4;
+        ctx.lineWidth=7;
 
-        ctx.globalAlpha=.55;
+        ctx.shadowBlur=20;
+
+        ctx.shadowColor=
+            getFormColor(
+                currentForm||1
+            );
 
         ctx.beginPath();
 
         ctx.arc(
-            5,
-            -80,
-            58,
-            -1.3,
-            .8
+            0,
+            0,
+            75,
+            -.9,
+            .9
         );
 
         ctx.stroke();
 
-        ctx.globalAlpha=1;
+        ctx.shadowBlur=0;
 
     }
 
 
-    /* hurt */
+    /*
+    DEFENCE SHIELD.
+    */
 
-    if(playerHurt>0){
+    if(defending){
 
-        ctx.fillStyle=
-            "rgba(255,30,50,.35)";
+        ctx.strokeStyle="#00d9ff";
+
+        ctx.lineWidth=8;
+
+        ctx.shadowBlur=25;
+
+        ctx.shadowColor="#00d9ff";
 
         ctx.beginPath();
 
         ctx.arc(
             0,
-            -90,
+            0,
             62,
+            -1.2,
+            1.2
+        );
+
+        ctx.stroke();
+
+        ctx.shadowBlur=0;
+
+    }
+
+
+    /*
+    Perfect guard.
+    */
+
+    if(player.perfectGuard>0){
+
+        ctx.strokeStyle="#ffffff";
+
+        ctx.lineWidth=5;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            0,
+            75,
             0,
             Math.PI*2
         );
 
-        ctx.fill();
+        ctx.stroke();
 
     }
 
@@ -1987,40 +2200,45 @@ function drawPlayer(){
 
 
 /* =========================================================
-   DRAW DEMON
+   DRAW ENEMIES
 ========================================================= */
 
-function drawDemon(){
-
-    if(!enemy)
-        return;
+function drawEnemy(enemy){
 
     ctx.save();
 
     ctx.translate(
-        enemy.x-cameraX,
+        enemy.x,
         enemy.y
     );
 
+
+    const scale=
+        enemy.boss
+        ?1.45
+        :1;
+
+
     ctx.scale(
-        enemy.x>=player.x
-        ?-1
-        :1,
-        1
+        scale,
+        scale
     );
 
 
-    /* shadow */
+    /*
+    Shadow.
+    */
 
-    ctx.fillStyle="rgba(0,0,0,.5)";
+    ctx.fillStyle=
+        "rgba(0,0,0,.5)";
 
     ctx.beginPath();
 
     ctx.ellipse(
         0,
-        8,
-        45,
-        11,
+        35,
+        34,
+        10,
         0,
         0,
         Math.PI*2
@@ -2029,246 +2247,167 @@ function drawDemon(){
     ctx.fill();
 
 
-    /* legs */
+    /*
+    Body.
+    */
 
-    ctx.fillStyle="#211624";
+    ctx.fillStyle=
+        enemy.color.trim();
 
     ctx.fillRect(
         -20,
-        -45,
-        15,
-        45
-    );
-
-    ctx.fillRect(
-        5,
-        -45,
-        15,
-        45
+        -12,
+        40,
+        38
     );
 
 
-    /* body */
+    /*
+    Head.
+    */
+
+    ctx.fillStyle="#a96f55";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -30,
+        15,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /*
+    Demon hair.
+    */
 
     ctx.fillStyle=
         enemy.boss
-        ?"#70144f"
-        :"#47213b";
+        ?"#16001f"
+        :"#21130e";
 
     ctx.beginPath();
 
-    ctx.moveTo(-31,-108);
-    ctx.lineTo(31,-108);
-    ctx.lineTo(34,-42);
-    ctx.lineTo(-34,-42);
-
-    ctx.closePath();
-
-    ctx.fill();
-
-
-    /* neck */
-
-    ctx.fillStyle="#8b5048";
-
-    ctx.fillRect(
-        -8,
-        -119,
+    ctx.arc(
+        0,
+        -35,
         16,
-        14
-    );
-
-
-    /* face */
-
-    ctx.fillStyle="#925448";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        -136,
-        26,
-        0,
+        Math.PI,
         Math.PI*2
     );
 
     ctx.fill();
 
 
-    /* hair */
+    /*
+    Eyes.
+    */
 
-    ctx.fillStyle="#271125";
+    ctx.fillStyle=
+        enemy.boss
+        ?"#ff004c"
+        :"#ffb000";
 
-    ctx.beginPath();
-
-    ctx.moveTo(
-        -30,-137
+    ctx.fillRect(
+        -9,
+        -32,
+        6,
+        4
     );
 
-    ctx.quadraticCurveTo(
-        -22,-172,
-        0,-167
-    );
-
-    ctx.quadraticCurveTo(
-        25,-172,
-        30,-137
-    );
-
-    ctx.lineTo(
-        16,-147
-    );
-
-    ctx.lineTo(
-        7,-136
-    );
-
-    ctx.lineTo(
-        -2,-150
-    );
-
-    ctx.lineTo(
-        -12,-136
-    );
-
-    ctx.lineTo(
-        -21,-148
-    );
-
-    ctx.closePath();
-
-    ctx.fill();
-
-
-    /* eyes */
-
-    ctx.fillStyle="#ff2448";
-
-    ctx.shadowBlur=14;
-
-    ctx.shadowColor="#ff0033";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        -10,
-        -136,
+    ctx.fillRect(
         4,
-        0,
-        Math.PI*2
+        -32,
+        6,
+        4
     );
 
-    ctx.arc(
-        10,
-        -136,
-        4,
-        0,
-        Math.PI*2
-    );
 
-    ctx.fill();
+    /*
+    Arms.
+    */
 
-    ctx.shadowBlur=0;
-
-
-    /* arms */
-
-    ctx.fillStyle="#925448";
+    ctx.fillStyle="#a96f55";
 
     ctx.fillRect(
-        -43,
-        -97,
-        13,
-        48
+        -29,
+        -9,
+        9,
+        24
     );
 
     ctx.fillRect(
-        30,
-        -97,
-        13,
-        48
+        20,
+        -9,
+        9,
+        24
     );
 
 
-    /* boss aura */
+    /*
+    Enemy sword.
+    */
 
-    if(enemy.boss){
-
-        ctx.strokeStyle="#ff2071";
-
-        ctx.lineWidth=5;
-
-        ctx.globalAlpha=.7;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            0,
-            -90,
-            72,
-            0,
-            Math.PI*2
-        );
-
-        ctx.stroke();
-
-        ctx.globalAlpha=1;
-
-        ctx.fillStyle="#ffd166";
-
-        ctx.font="bold 20px Arial";
-
-        ctx.fillText(
-            "BOSS",
-            -28,
-            -193
-        );
-
-    }
-
-
-    /* enemy health */
-
-    ctx.fillStyle="#171717";
+    ctx.fillStyle="#bfc7d5";
 
     ctx.fillRect(
-        -43,
-        -184,
-        86,
+        20,
+        -4,
+        40,
+        5
+    );
+
+
+    /*
+    Health bar.
+    */
+
+    ctx.fillStyle="#151515";
+
+    ctx.fillRect(
+        -35,
+        -58,
+        70,
         8
     );
 
-    ctx.fillStyle="#ef3340";
+    ctx.fillStyle=
+        enemy.boss
+        ?"#ff006e"
+        :"#e63946";
 
     ctx.fillRect(
-        -43,
-        -184,
-        86*
+        -35,
+        -58,
+        70*
         Math.max(
             0,
-            enemy.health/enemy.maxHealth
+            enemy.health/
+            enemy.maxHealth
         ),
         8
     );
 
 
-    if(enemy.hurt>0){
+    if(enemy.boss){
 
-        ctx.fillStyle=
-            "rgba(255,255,255,.5)";
+        ctx.fillStyle="#ffd166";
 
-        ctx.beginPath();
+        ctx.font=
+            "bold 17px Arial";
 
-        ctx.arc(
+        ctx.textAlign="center";
+
+        ctx.fillText(
+            enemy.name||
+            "BOSS",
             0,
-            -95,
-            62,
-            0,
-            Math.PI*2
+            -70
         );
-
-        ctx.fill();
 
     }
 
@@ -2279,224 +2418,7 @@ function drawDemon(){
 
 
 /* =========================================================
-   DRAW WATER
-========================================================= */
-
-function drawWater(){
-
-    for(
-        const w of waterWaves
-    ){
-
-        ctx.save();
-
-        ctx.translate(
-            w.x-cameraX,
-            w.y
-        );
-
-        ctx.scale(
-            w.direction,
-            1
-        );
-
-        ctx.globalAlpha=
-            Math.max(
-                0,
-                w.life/28
-            );
-
-        ctx.strokeStyle=w.color;
-
-        ctx.lineWidth=7;
-
-
-        if(w.form===1){
-
-            ctx.beginPath();
-
-            ctx.arc(
-                0,
-                0,
-                65,
-                -1.1,
-                1.1
-            );
-
-            ctx.stroke();
-
-        }
-
-
-        if(w.form===2){
-
-            ctx.beginPath();
-
-            ctx.arc(
-                0,
-                0,
-                78,
-                -.9,
-                .9
-            );
-
-            ctx.stroke();
-
-            ctx.beginPath();
-
-            ctx.arc(
-                10,
-                0,
-                50,
-                -.7,
-                .7
-            );
-
-            ctx.stroke();
-
-        }
-
-
-        if(w.form===3){
-
-            ctx.beginPath();
-
-            ctx.moveTo(-20,-55);
-
-            ctx.quadraticCurveTo(
-                50,-25,
-                -5,0
-            );
-
-            ctx.quadraticCurveTo(
-                55,35,
-                0,60
-            );
-
-            ctx.stroke();
-
-        }
-
-
-        if(w.form===4){
-
-            ctx.beginPath();
-
-            ctx.moveTo(-20,0);
-
-            ctx.quadraticCurveTo(
-                55,-90,
-                130,0
-            );
-
-            ctx.quadraticCurveTo(
-                55,90,
-                -20,0
-            );
-
-            ctx.stroke();
-
-        }
-
-
-        if(w.form===5){
-
-            for(let i=0;i<5;i++){
-
-                ctx.beginPath();
-
-                ctx.arc(
-                    i*25,
-                    -20+i*9,
-                    30+i*5,
-                    0,
-                    Math.PI*2
-                );
-
-                ctx.stroke();
-
-            }
-
-        }
-
-
-        ctx.restore();
-
-    }
-
-}
-
-
-/* =========================================================
-   DRAW PROJECTILES
-========================================================= */
-
-function drawProjectiles(){
-
-    for(
-        const p of projectiles
-    ){
-
-        ctx.save();
-
-        ctx.translate(
-            p.x-cameraX,
-            p.y
-        );
-
-        ctx.fillStyle=p.color;
-
-        ctx.shadowBlur=18;
-
-        ctx.shadowColor=p.color;
-
-
-        if(
-            p.type==="ring"
-        ){
-
-            ctx.strokeStyle=p.color;
-
-            ctx.lineWidth=7;
-
-            ctx.beginPath();
-
-            ctx.arc(
-                0,
-                0,
-                p.radius,
-                0,
-                Math.PI*2
-            );
-
-            ctx.stroke();
-
-        }
-        else{
-
-            ctx.beginPath();
-
-            ctx.arc(
-                0,
-                0,
-                p.radius,
-                0,
-                Math.PI*2
-            );
-
-            ctx.fill();
-
-        }
-
-        ctx.restore();
-
-    }
-
-}
-
-
-/* =========================================================
-   DRAW PARTICLES
+   PARTICLES DRAW
 ========================================================= */
 
 function drawParticles(){
@@ -2511,19 +2433,15 @@ function drawParticles(){
                 p.life/45
             );
 
-        ctx.fillStyle=p.color;
+        ctx.fillStyle=
+            p.color;
 
-        ctx.beginPath();
-
-        ctx.arc(
-            p.x-cameraX,
-            p.y,
-            4,
-            0,
-            Math.PI*2
+        ctx.fillRect(
+            p.x-3,
+            p.y-3,
+            6,
+            6
         );
-
-        ctx.fill();
 
     }
 
@@ -2539,74 +2457,213 @@ function drawParticles(){
 function updateHUD(){
 
     document
-        .getElementById("levelText")
-        .textContent=level;
+    .getElementById("levelText")
+    .textContent=
+        level;
+
 
     document
-        .getElementById("scoreText")
-        .textContent=score;
+    .getElementById("characterText")
+    .textContent=
+        character;
+
 
     document
-        .getElementById("playerBar")
-        .style.width=
+    .getElementById("healthFill")
+    .style.width=
         Math.max(
             0,
-            playerHP
+            health
         )+"%";
 
 
-    if(enemy){
+    document
+    .getElementById("guardFill")
+    .style.width=
+        guard+"%";
 
-        document
-            .getElementById("enemyBar")
-            .style.width=
+
+    let enemyHealth=0;
+    let enemyMax=0;
+
+
+    for(
+        const enemy of enemies
+    ){
+
+        enemyHealth+=
             Math.max(
                 0,
-                enemy.health/
-                enemy.maxHealth*
-                100
-            )+"%";
+                enemy.health
+            );
 
-        document
-            .getElementById("artText")
-            .textContent=
-            enemy.art;
-
-    }
-    else{
-
-        document
-            .getElementById("enemyBar")
-            .style.width="0%";
-
-        document
-            .getElementById("artText")
-            .textContent="None";
+        enemyMax+=
+            enemy.maxHealth;
 
     }
 
 
     document
-        .getElementById("formText")
-        .textContent=
-        currentForm===0
-        ?"Normal"
-        :forms[currentForm].name;
+    .getElementById("enemyFill")
+    .style.width=
+        enemyMax
+        ?enemyHealth/enemyMax*100+"%"
+        :"0%";
+
+
+    document
+    .getElementById("scoreText")
+    .textContent=
+        score;
+
+
+    document
+    .getElementById("bossText")
+    .textContent=
+        level%5===0
+        ?level===50
+            ?"☀️ FINAL BOSS — MUZAN"
+            :"👹 BOSS LEVEL"
+        :"";
 
 }
 
 
 /* =========================================================
-   MESSAGE
+   MESSAGES
 ========================================================= */
 
 function showMessage(text){
 
     document
-        .getElementById("message")
-        .textContent=text;
+    .getElementById("message")
+    .textContent=
+        text;
 
     messageTimer=90;
+
+}
+
+
+/* =========================================================
+   LEVEL COMPLETE
+========================================================= */
+
+function completeLevel(){
+
+    if(!running)
+        return;
+
+
+    running=false;
+
+
+    if(level>=50){
+
+        document
+        .getElementById("victory")
+        .classList
+        .remove("hidden");
+
+        return;
+
+    }
+
+
+    document
+    .getElementById("completeText")
+    .textContent=
+        level%5===0
+        ?"👹 BOSS DEFEATED!"
+        :"⚔️ DEMONS DEFEATED!";
+
+
+    document
+    .getElementById("levelComplete")
+    .classList
+    .remove("hidden");
+
+}
+
+
+/* =========================================================
+   NEXT LEVEL
+========================================================= */
+
+function nextLevel(){
+
+    document
+    .getElementById("levelComplete")
+    .classList
+    .add("hidden");
+
+
+    level++;
+
+
+    health=
+        Math.min(
+            100,
+            health+20
+        );
+
+
+    guard=100;
+
+
+    setupLevel();
+
+    running=true;
+
+
+    if(level===50){
+
+        showMessage(
+            "☀️ FINAL LEVEL — MUZAN!"
+        );
+
+    }
+    else if(level>=39){
+
+        showMessage(
+            "👹 KIZUKI LEVEL "+level
+        );
+
+    }
+    else{
+
+        showMessage(
+            "LEVEL "+level+" — FIGHT!"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   GAME OVER
+========================================================= */
+
+function gameOver(){
+
+    if(!running)
+        return;
+
+
+    running=false;
+
+
+    document
+    .getElementById("deadLevel")
+    .textContent=
+        level;
+
+
+    document
+    .getElementById("gameOver")
+    .classList
+    .remove("hidden");
 
 }
 
@@ -2624,29 +2681,44 @@ function draw(){
         canvas.height
     );
 
-    drawBackground();
 
-    drawWater();
+    ctx.save();
 
-    drawProjectiles();
+
+    ctx.translate(
+        -camera.x,
+        -camera.y
+    );
+
+
+    drawWorld();
+
+
+    for(
+        const enemy of enemies
+    ){
+
+        drawEnemy(enemy);
+
+    }
+
 
     drawParticles();
-
-    drawDemon();
 
     drawPlayer();
 
 
+    ctx.restore();
+
+
     /*
-    Low-health red screen.
+    Low-health red effect.
     */
 
-    if(
-        playerHP<30
-    ){
+    if(health<30){
 
         ctx.fillStyle=
-            "rgba(255,0,30,.08)";
+            "rgba(255,0,0,.09)";
 
         ctx.fillRect(
             0,
@@ -2657,11 +2729,32 @@ function draw(){
 
     }
 
+
+    /*
+    Defence screen effect.
+    */
+
+    if(defending){
+
+        ctx.strokeStyle=
+            "rgba(0,217,255,.35)";
+
+        ctx.lineWidth=5;
+
+        ctx.strokeRect(
+            5,
+            5,
+            canvas.width-10,
+            canvas.height-10
+        );
+
+    }
+
 }
 
 
 /* =========================================================
-   LOOP
+   MAIN LOOP
 ========================================================= */
 
 function loop(){
@@ -2670,15 +2763,14 @@ function loop(){
 
         updatePlayer();
 
-        updateDemon();
+        updateEnemies();
 
-        updateProjectiles();
-
-        updateEffects();
+        updateParticles();
 
         updateHUD();
 
     }
+
 
     draw();
 
@@ -2690,8 +2782,8 @@ function loop(){
         if(messageTimer<=0){
 
             document
-                .getElementById("message")
-                .textContent="";
+            .getElementById("message")
+            .textContent="";
 
         }
 
@@ -2701,210 +2793,6 @@ function loop(){
     requestAnimationFrame(loop);
 
 }
-
-
-/* =========================================================
-   MOBILE JOYSTICK
-========================================================= */
-
-let joyX=0;
-let joyY=0;
-
-const joystickArea=
-    document.getElementById(
-        "joystickArea"
-    );
-
-const joystick=
-    document.getElementById(
-        "joystick"
-    );
-
-
-function moveJoystick(touch){
-
-    const r=
-        joystickArea.getBoundingClientRect();
-
-    let x=
-        touch.clientX-
-        r.left-
-        r.width/2;
-
-    let y=
-        touch.clientY-
-        r.top-
-        r.height/2;
-
-    const max=
-        r.width/2-30;
-
-    const d=
-        Math.hypot(x,y);
-
-    if(d>max){
-
-        x=x/d*max;
-        y=y/d*max;
-
-    }
-
-    joyX=x/max;
-    joyY=y/max;
-
-    joystick.style.left=
-        (r.width/2-30+x)+"px";
-
-    joystick.style.top=
-        (r.height/2-30+y)+"px";
-
-}
-
-
-function resetJoystick(){
-
-    joyX=0;
-    joyY=0;
-
-    joystick.style.left="42px";
-    joystick.style.top="42px";
-
-}
-
-
-joystickArea.addEventListener(
-    "touchstart",
-    e=>{
-
-        e.preventDefault();
-
-        moveJoystick(
-            e.touches[0]
-        );
-
-    },
-    {passive:false}
-);
-
-
-joystickArea.addEventListener(
-    "touchmove",
-    e=>{
-
-        e.preventDefault();
-
-        moveJoystick(
-            e.touches[0]
-        );
-
-    },
-    {passive:false}
-);
-
-
-joystickArea.addEventListener(
-    "touchend",
-    e=>{
-
-        e.preventDefault();
-
-        resetJoystick();
-
-    },
-    {passive:false}
-);
-
-
-/* RUN */
-
-document
-    .getElementById("runBtn")
-    .addEventListener(
-        "touchstart",
-        e=>{
-
-            e.preventDefault();
-
-            runHeld=true;
-
-        },
-        {passive:false}
-    );
-
-
-document
-    .getElementById("runBtn")
-    .addEventListener(
-        "touchend",
-        e=>{
-
-            e.preventDefault();
-
-            runHeld=false;
-
-        },
-        {passive:false}
-    );
-
-
-/* ATTACK */
-
-document
-    .getElementById("attackBtn")
-    .addEventListener(
-        "touchstart",
-        e=>{
-
-            e.preventDefault();
-
-            attackHeld=true;
-
-        },
-        {passive:false}
-    );
-
-
-document
-    .getElementById("attackBtn")
-    .addEventListener(
-        "touchend",
-        e=>{
-
-            e.preventDefault();
-
-            attackHeld=false;
-
-        },
-        {passive:false}
-    );
-
-
-/* MOBILE FORMS */
-
-document
-    .querySelectorAll(".formButton")
-    .forEach(btn=>{
-
-        btn.addEventListener(
-            "touchstart",
-            e=>{
-
-                e.preventDefault();
-
-                useForm(
-                    Number(
-                        btn.dataset.form
-                    )
-                );
-
-            },
-            {passive:false}
-        );
-
-    });
-
-
-/* START LOOP */
 
 loop();
 
